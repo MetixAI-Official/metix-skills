@@ -1,6 +1,6 @@
 ---
 name: metix-people-search
-description: Use when finding professional profiles on Metix by role, skills, employer, education, location, or seniority, or when a profile search needs natural language. Returns profile ids only, so pair it with metix-people-detail to get records.
+description: Use when finding professional profiles on Metix by role, skills, employer, education, location, or seniority, when a profile search needs natural language, and when retrieving the full profile records behind the ids.
 ---
 
 # Metix people search
@@ -138,8 +138,8 @@ carries the same complete vocabulary and scope rules.
 ```
 
 Ids only. No names, no employers, no contact fields. That is not a limitation
-of your query, it is the shape of the endpoint. Pass these ids to
-`metix-people-detail`.
+of your query, it is the shape of the endpoint. Pass these ids to the detail
+route below.
 
 `total` is an integer below 10,000 and the string `"10000+"` at or above that
 band, so do not do arithmetic on it without checking the type first.
@@ -160,3 +160,63 @@ Before concluding a search is genuinely empty, check your field names against
 the lists above, and check which list a field is in. An exact field given a
 value that does not match the stored one whole returns nothing and reports no
 error, which looks exactly like a genuine zero.
+
+## Detail: turning ids into records
+
+`POST /entity/v1/profiles/detail-by-id`
+
+```bash
+curl -X POST "https://mira-api.metix.ai/entity/v1/profiles/detail-by-id" \
+  -H "Authorization: Bearer $METIX_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"profile_ids": ["enc_9f2c...", "enc_41ab..."]}'
+```
+
+1 to 100 ids per request. Ids come from the search above.
+
+There is no lookup by LinkedIn URL. When a user hands you a profile URL, run
+`/v1/people/query` with `{"field": "linkedin_url", "eq": "<url>"}` to get the
+id, then call detail with it. That is two charged calls rather than one, so say
+so before doing it in bulk.
+
+## What comes back
+
+```json
+{ "code": 200, "msg": "ok",
+  "data": { "total": 2, "found": 2, "not_found": [], "results": [ { } ] } }
+```
+
+`found` is a **count**, not a list. The records are in `results`. Reading
+`data.found` as an array is the most common mistake against this endpoint.
+`total` is the requested id count after de-duplication, so sending the same id
+twice does not get you two records or two charges.
+
+Ids that matched nothing come back in `not_found`. A miss is not an error, so do
+not retry it; retrying returns the same miss and wastes a round trip.
+
+## Cost, and the mistake to avoid
+
+**`ceil(found / 5)` Credits.** One through five found records cost 1; six
+through ten cost 2. Ids in `not_found` cost nothing.
+
+So batch. Sending five separate single-id requests costs 5 Credits for work that
+costs 1 in one request. Collect the ids you need, then send them together, up to
+100 per request.
+
+## Batching a large set
+
+Ids are permanently stable, so a large job does not have to complete in one
+pass. Search once, keep the ids, then walk them in batches of 100 across as many
+sessions as you need. Each batch settles against records actually found in
+started bands of five. Nothing expires.
+
+## Fields
+
+Records carry public professional information: `full_name`,
+`active_experience_title`, `address`, `experience`, `education`, `skills`,
+`certifications`, `languages`, `patents`, `publications`, and similar. The
+complete list of what a response may contain is in the public field reference
+for the profile entity.
+
+Personal contact fields are not part of a detail response and cannot be selected
+into one. Email lookup is a separate capability and is not open yet.

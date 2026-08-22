@@ -24,5 +24,9 @@ for skill_dir in "$installed_root"/metix-*; do
   grep -Fq 'references/credits.md' "$skill_dir/SKILL.md" || { echo "missing credits link: $skill_dir" >&2; exit 1; }
 done
 
-[ "$skill_count" -eq 5 ] || { echo "expected 5 installed skills, found $skill_count" >&2; exit 1; }
-echo "OK — clean npx install copied 5 self-contained skills."
+# Counted from the tree rather than hardcoded. The number was 5 and went stale
+# the moment people-detail merged into people-search, which is a check failing
+# for its own bookkeeping instead of for the thing it guards.
+expected=$(find "$repo_root/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d " ")
+[ "$skill_count" -eq "$expected" ] || { echo "expected $expected installed skills, found $skill_count" >&2; exit 1; }
+echo "OK — clean npx install copied $skill_count self-contained skills."

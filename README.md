@@ -40,8 +40,7 @@ Keep it out of source control and out of anything browser-visible.
 | Skill | Use it for |
 |---|---|
 | `metix-platform-assistant` | Choosing a capability and sequencing calls across areas. Start here. |
-| `metix-people-search` | Finding profiles by role, skills, employer, education, location, seniority. |
-| `metix-people-detail` | Turning profile ids into full records. |
+| `metix-people-search` | Finding profiles, and turning the ids into full records. |
 | `metix-company-search` | Organization lists and company records. |
 | `metix-job-search` | Active postings as a hiring-demand signal. |
 

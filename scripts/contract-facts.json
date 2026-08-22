@@ -354,15 +354,13 @@
       "country_iso_2",
       "/v1/jobs/query"
     ],
-    "metix-people-detail": [
-      "ceil(found / 5)",
-      "/entity/v1/profiles/detail-by-id"
-    ],
     "metix-people-search": [
       "ceil(profile_ids.length / 25)",
       "5 + ceil",
       "/v1/people/query",
-      "each composer takes a non-empty array"
+      "each composer takes a non-empty array",
+      "ceil(found / 5)",
+      "/entity/v1/profiles/detail-by-id"
     ],
     "metix-platform-assistant": [
       "/v1/people/query",
