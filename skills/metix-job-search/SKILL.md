@@ -1,9 +1,9 @@
 ---
 name: metix-job-search
-description: Use when analysing active job postings on Metix (hiring demand by role, function, company, location, salary, or seniority) and when retrieving full posting records.
+description: Use when analysing active job postings on Metix AI (hiring demand by role, function, company, location, salary, or seniority) and when retrieving full posting records.
 ---
 
-# Metix job search and detail
+# Metix AI job search and detail
 
 Search returns `job_ids`; detail returns the postings.
 

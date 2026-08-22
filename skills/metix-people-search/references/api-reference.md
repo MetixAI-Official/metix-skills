@@ -1,4 +1,4 @@
-# Metix API reference
+# Metix AI API reference
 
 Base URL: `https://mira-api.metix.ai`
 Auth: `Authorization: Bearer $METIX_KEY` on every call except `GET /version`.
@@ -259,7 +259,7 @@ There are no scopes on companies.
 
 Personal and work email lookup is not open. There is no public route to call and
 no price to quote for it yet. Do not build a contact step into a workflow and do
-not tell a user that Metix will return an email address today.
+not tell a user that Metix AI will return an email address today.
 
 Personal contact fields are not part of a detail response either, and cannot be
 selected into one.

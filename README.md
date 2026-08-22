@@ -1,6 +1,6 @@
-# Metix skills
+# Metix AI skills
 
-Agent skills for the [Metix](https://metix.ai) data API: professional profiles,
+Agent skills for the [Metix AI](https://metix.ai) data API: professional profiles,
 companies, and active job postings.
 
 These skills exist so an agent stops guessing endpoint names. The release checks
@@ -25,7 +25,7 @@ export METIX_KEY="mira_xxxxxxxxxxxx"
 Create one at [platform.metix.ai/api-keys](https://platform.metix.ai/api-keys).
 The free plan starts with 100 Credits and needs no card.
 
-The variable is `METIX_KEY`, which is what every skill here reads. The Metix
+The variable is `METIX_KEY`, which is what every skill here reads. The Metix AI
 docs write the same key as `MIRA_KEY` in their curl examples, so if you have
 followed those, export it under this name as well:
 
@@ -103,11 +103,11 @@ single-record requests cost `5`. Full rules: `references/credits.md`.
 
 Installing these Skills does not install or register an MCP server. Skills are
 local agent instructions; MCP is an independent client connection to the same
-Metix API and uses the same key and Credit rules.
+Metix AI API and uses the same key and Credit rules.
 
 Streamable HTTP endpoint: `https://mira-api.metix.ai/mcp`; legacy SSE endpoint:
 `https://mira-api.metix.ai/sse`. A client negotiates the protocol version with
-the server and must send `Authorization: Bearer <Metix API key>`.
+the server and must send `Authorization: Bearer <Metix AI API key>`.
 
 For example, a project-scoped Claude Code `.mcp.json` can keep the key as an
 environment reference instead of writing its value into configuration:

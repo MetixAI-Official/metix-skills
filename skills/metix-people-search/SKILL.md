@@ -1,9 +1,9 @@
 ---
 name: metix-people-search
-description: Use when finding professional profiles on Metix by role, skills, employer, education, location, or seniority, when a profile search needs natural language, and when retrieving the full profile records behind the ids.
+description: Use when finding professional profiles on Metix AI by role, skills, employer, education, location, or seniority, when a profile search needs natural language, and when retrieving the full profile records behind the ids.
 ---
 
-# Metix people search
+# Metix AI people search
 
 Two routes to the same result: `profile_ids`. Prefer the structured Query Spec
 route; reach for natural language only when the constraints resist being written

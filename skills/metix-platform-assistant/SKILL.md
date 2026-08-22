@@ -1,11 +1,11 @@
 ---
 name: metix-platform-assistant
-description: Use when a task needs Metix data across more than one area (people, companies, or jobs) and you must decide which capability to call, in what order, and what it costs. Start here when the request is a goal rather than a single lookup.
+description: Use when a task needs Metix AI data across more than one area (people, companies, or jobs) and you must decide which capability to call, in what order, and what it costs. Start here when the request is a goal rather than a single lookup.
 ---
 
-# Metix platform assistant
+# Metix AI platform assistant
 
-Coordinates the other Metix skills. Use it to choose a route and sequence calls;
+Coordinates the other Metix AI skills. Use it to choose a route and sequence calls;
 use the focused skills for the exact request shape of each capability.
 
 Endpoints, limits, and Credit rules: `references/api-reference.md` and
@@ -14,7 +14,7 @@ they disagree, they win.
 
 ## Three entities, one shape
 
-Metix serves people, companies, and jobs. Each has a search that returns
+Metix AI serves people, companies, and jobs. Each has a search that returns
 encrypted ids and a detail endpoint that turns ids into records.
 
 | The user is asking | Call |

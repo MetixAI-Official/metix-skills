@@ -1,9 +1,9 @@
 ---
 name: metix-company-search
-description: Use when building organization lists on Metix or retrieving company records for account research, market mapping, funding and headcount filters, or connecting company data to people and job signals.
+description: Use when building organization lists on Metix AI or retrieving company records for account research, market mapping, funding and headcount filters, or connecting company data to people and job signals.
 ---
 
-# Metix company search and detail
+# Metix AI company search and detail
 
 Same two-step shape: search returns `company_ids`, detail returns records.
 
