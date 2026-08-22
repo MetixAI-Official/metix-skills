@@ -1,0 +1,17 @@
+# Agent and tooling scratch state. These carry local absolute paths and captured
+# tool output — including internal quota figures — and have no place in a
+# repository that is going public.
+.omc/
+.claude/
+.codex/
+*.log
+
+# Editor and OS noise
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Environment
+.env
+.env.*

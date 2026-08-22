@@ -1,0 +1,374 @@
+{
+  "apiVersion": "2.1.2",
+  "priceVersion": "usage-pricing-v2026-08-04",
+  "endpoints": {
+    "/v1/people-search": {
+      "formula": "5 + ceil(successful_result_count / 25)",
+      "chargeOn": "2xx",
+      "resultPath": "profile_ids"
+    },
+    "/v1/people/query": {
+      "formula": "ceil(successful_result_count / 25)",
+      "chargeOn": "2xx_with_non_empty_result",
+      "resultPath": "profile_ids"
+    },
+    "/entity/v1/profiles/detail-by-id": {
+      "formula": "ceil(successful_record_count / 5)",
+      "chargeOn": "2xx_with_non_empty_result",
+      "resultPath": "found"
+    },
+    "/v1/jobs/query": {
+      "formula": "ceil(successful_result_count / 25)",
+      "chargeOn": "2xx_with_non_empty_result",
+      "resultPath": "job_ids"
+    },
+    "/entity/v1/jobs/detail-by-id": {
+      "formula": "ceil(successful_record_count / 5)",
+      "chargeOn": "2xx_with_non_empty_result",
+      "resultPath": "found"
+    },
+    "/v1/companies/query": {
+      "formula": "ceil(successful_result_count / 25)",
+      "chargeOn": "2xx_with_non_empty_result",
+      "resultPath": "company_ids"
+    },
+    "/entity/v1/companies/detail-by-id": {
+      "formula": "ceil(successful_record_count / 5)",
+      "chargeOn": "2xx_with_non_empty_result",
+      "resultPath": "found"
+    },
+    "/version": {
+      "chargeOn": "never",
+      "priceVersion": false
+    },
+    "/auth/key/status": {
+      "chargeOn": "never",
+      "priceVersion": false
+    }
+  },
+  "queryVocabulary": {
+    "fields": [
+      "active_department",
+      "active_title",
+      "awards",
+      "certifications",
+      "city",
+      "company_employees_count",
+      "company_name",
+      "company_size_range",
+      "company_type",
+      "country",
+      "country_iso2",
+      "country_iso3",
+      "courses",
+      "degree_level",
+      "duration_months",
+      "ended_at",
+      "experience_months",
+      "first_name",
+      "full_name",
+      "graduation_year",
+      "headline",
+      "industry",
+      "institution_name",
+      "institution_ranking",
+      "is_current",
+      "is_decision_maker",
+      "is_studying",
+      "is_working",
+      "languages",
+      "last_name",
+      "level",
+      "linkedin_url",
+      "major",
+      "management_level",
+      "patents",
+      "publications",
+      "regions",
+      "role",
+      "skills",
+      "started_at",
+      "state",
+      "study_start_year",
+      "title",
+      "workplace_city",
+      "workplace_country",
+      "workplace_state"
+    ],
+    "numericFields": [
+      "company_employees_count",
+      "company_size_range",
+      "degree_level",
+      "duration_months",
+      "experience_months",
+      "graduation_year",
+      "institution_ranking",
+      "study_start_year"
+    ],
+    "dateFields": [
+      "ended_at",
+      "started_at"
+    ],
+    "textFields": [
+      "active_department",
+      "active_title",
+      "awards",
+      "certifications",
+      "company_name",
+      "courses",
+      "headline",
+      "institution_name",
+      "languages",
+      "major",
+      "patents",
+      "publications",
+      "skills",
+      "title"
+    ],
+    "exactFields": [
+      "city",
+      "company_type",
+      "country",
+      "country_iso2",
+      "country_iso3",
+      "first_name",
+      "full_name",
+      "industry",
+      "is_current",
+      "is_decision_maker",
+      "is_studying",
+      "is_working",
+      "last_name",
+      "level",
+      "linkedin_url",
+      "management_level",
+      "regions",
+      "role",
+      "state",
+      "workplace_city",
+      "workplace_country",
+      "workplace_state"
+    ],
+    "fieldOperators": {
+      "date": [
+        "gte",
+        "lte",
+        "exists"
+      ],
+      "nonNumeric": [
+        "eq",
+        "in",
+        "match",
+        "exists"
+      ],
+      "numeric": [
+        "gte",
+        "lte",
+        "exists"
+      ]
+    },
+    "scopes": [
+      "has_education",
+      "has_experience",
+      "has_language"
+    ],
+    "operators": [
+      "eq",
+      "exists",
+      "gte",
+      "in",
+      "lte",
+      "match"
+    ],
+    "composers": [
+      "all",
+      "any",
+      "not"
+    ],
+    "scopeFields": {
+      "has_education": [
+        "degree_level",
+        "graduation_year",
+        "institution_name",
+        "institution_ranking",
+        "is_studying",
+        "major",
+        "study_start_year"
+      ],
+      "has_experience": [
+        "company_employees_count",
+        "company_name",
+        "company_size_range",
+        "company_type",
+        "duration_months",
+        "ended_at",
+        "industry",
+        "is_current",
+        "level",
+        "role",
+        "started_at",
+        "title",
+        "workplace_city",
+        "workplace_country",
+        "workplace_state"
+      ],
+      "has_language": [
+        "languages"
+      ]
+    },
+    "invalidFlatNames": [
+      "experience_months_min",
+      "experience_months_max",
+      "degree_level_min",
+      "institution_ranking_max"
+    ]
+  },
+  "entityVocabulary": {
+    "job": {
+      "label": "Job",
+      "fields": [
+        "applicants_count",
+        "application_active",
+        "city",
+        "company_name",
+        "country",
+        "country_iso_2",
+        "created_at",
+        "description",
+        "employment_type",
+        "functions",
+        "industries",
+        "location",
+        "posted",
+        "regions",
+        "required_months_of_experience",
+        "salary_currency",
+        "salary_max",
+        "salary_min",
+        "seniority",
+        "state",
+        "title",
+        "updated_at"
+      ],
+      "numericFields": [
+        "applicants_count",
+        "required_months_of_experience",
+        "salary_max",
+        "salary_min"
+      ],
+      "dateFields": [
+        "created_at",
+        "posted",
+        "updated_at"
+      ],
+      "textFields": [
+        "city",
+        "company_name",
+        "country",
+        "description",
+        "employment_type",
+        "functions",
+        "industries",
+        "location",
+        "regions",
+        "salary_currency",
+        "seniority",
+        "state",
+        "title"
+      ],
+      "exactFields": [
+        "application_active",
+        "country_iso_2"
+      ]
+    },
+    "company": {
+      "label": "Company",
+      "fields": [
+        "categories_and_keywords",
+        "employees_count",
+        "employees_count_change_yearly_percentage",
+        "followers_count",
+        "founded_year",
+        "hq_city",
+        "hq_country",
+        "hq_country_iso2",
+        "hq_full_address",
+        "hq_regions",
+        "hq_state",
+        "industry",
+        "is_b2b",
+        "last_funding_round_amount_raised",
+        "last_funding_round_date",
+        "last_updated_at",
+        "linkedin_url",
+        "name",
+        "size_range",
+        "stock_exchange",
+        "stock_ticker",
+        "type",
+        "website"
+      ],
+      "numericFields": [
+        "employees_count",
+        "employees_count_change_yearly_percentage",
+        "followers_count",
+        "founded_year",
+        "last_funding_round_amount_raised"
+      ],
+      "dateFields": [
+        "last_funding_round_date",
+        "last_updated_at"
+      ],
+      "textFields": [
+        "categories_and_keywords",
+        "hq_city",
+        "hq_country",
+        "hq_country_iso2",
+        "hq_full_address",
+        "hq_regions",
+        "hq_state",
+        "industry",
+        "linkedin_url",
+        "name",
+        "stock_exchange",
+        "stock_ticker",
+        "website"
+      ],
+      "exactFields": [
+        "is_b2b",
+        "size_range",
+        "type"
+      ]
+    }
+  },
+  "skills": {
+    "metix-company-search": [
+      "ceil(company_ids.length / 25)",
+      "ceil(found / 5)",
+      "51-200 employees",
+      "/v1/companies/query"
+    ],
+    "metix-job-search": [
+      "ceil(job_ids.length / 25)",
+      "ceil(found / 5)",
+      "country_iso_2",
+      "/v1/jobs/query"
+    ],
+    "metix-people-detail": [
+      "ceil(found / 5)",
+      "/entity/v1/profiles/detail-by-id"
+    ],
+    "metix-people-search": [
+      "ceil(profile_ids.length / 25)",
+      "5 + ceil",
+      "/v1/people/query",
+      "each composer takes a non-empty array"
+    ],
+    "metix-platform-assistant": [
+      "/v1/people/query",
+      "ceil(returned_ids / 25)",
+      "ceil(found / 5)",
+      "coming soon"
+    ]
+  }
+}
