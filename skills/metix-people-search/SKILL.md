@@ -33,7 +33,8 @@ curl -X POST "https://mira-api.metix.ai/v1/people/query" \
 It costs `ceil(profile_ids.length / 25)` and its successful empty result is
 free. The server reserves against the resolved size before searching, then
 settles against actual returned ids, so choose a window your available quota can
-cover. `size` defaults to 1000 and cannot exceed 1000 for a public key.
+cover. `size` defaults to 100 and can go up to 10,000. Every id in the window is
+billable, so ask for the page you intend to read rather than the ceiling.
 
 ## Natural language, when structure is awkward
 
@@ -41,7 +42,7 @@ cover. `size` defaults to 1000 and cannot exceed 1000 for a public key.
 The field is `text`, **not** `query`:
 
 ```bash
--d '{"text": "senior backend engineers who moved from fintech to healthcare in the last two years", "size": 1000}'
+-d '{"text": "senior backend engineers who moved from fintech to healthcare in the last two years", "size": 25}'
 ```
 
 AI search costs `5 + ceil(profile_ids.length / 25)`; a successful empty result
@@ -65,7 +66,7 @@ operator**, so a bounded range is an `all` of two leaves:
       ]},
       {"has_experience": {"all": [
         {"field": "company_name", "match": "Google"},
-        {"field": "level", "eq": "director"},
+        {"field": "level", "eq": "Director"},
         {"field": "is_current", "eq": true}
       ]}},
       {"not": [{"field": "skills", "eq": "php"}]}
@@ -75,7 +76,8 @@ operator**, so a bounded range is an `all` of two leaves:
 }
 ```
 
-Composers are `all`, `any`, `not`; each composer takes a non-empty array.
+Composers are `all`, `any`, `not`. `all` and `any` take a non-empty array;
+`not` takes one condition, or an array.
 Operators are `eq`, `exists`, `gte`, `in`, `lte`, `match`.
 
 The trap here is that **the operator does not decide how a value is compared.
@@ -110,8 +112,8 @@ The exact Query fields are:
 Scopes are `has_education`, `has_experience`, `has_language`, and they are the
 reason to use this endpoint. A scope makes every nested condition match the same
 education, experience, or language record, which is the difference between "one
-job that is both Google and director" and "some job at Google, and some job as
-director".
+job that is both Google and Director" and "some job at Google, and some job as
+Director".
 
 - `has_education` fields: `degree_level`, `graduation_year`,
   `institution_name`, `institution_ranking`, `is_studying`, `major`,
@@ -125,10 +127,10 @@ director".
 A scoped field used on its own outside a scope means "any record on this
 profile". Suffixed names `experience_months_min`, `experience_months_max`,
 `degree_level_min`, and `institution_ranking_max` are not Query field names; use
-the unsuffixed numeric field with `gte` or `lte`. Unknown or unpublished fields
-are rejected through one generic validation outlet, so a rejection does not tell
-you whether the field exists. The self-contained `references/api-reference.md`
-carries the same complete vocabulary and scope rules.
+the unsuffixed numeric field with `gte` or `lte`. A name that is not in the
+vocabulary is rejected, so check it against the list rather than guessing at a
+variant. The self-contained `references/api-reference.md` carries the same
+complete vocabulary and scope rules.
 
 ## What comes back
 
@@ -141,8 +143,9 @@ Ids only. No names, no employers, no contact fields. That is not a limitation
 of your query, it is the shape of the endpoint. Pass these ids to the detail
 route below.
 
-`total` is an integer below 10,000 and the string `"10000+"` at or above that
-band, so do not do arithmetic on it without checking the type first.
+`total` is an integer below 100,000 and the string `"100000+"` at or above that
+band, so do not do arithmetic on it without checking the type first. It counts
+what matched, not what came back.
 
 A `next` value appears when more pages exist and is omitted on the last one.
 Send it back as `after` to resume. Each page is charged as its own search.

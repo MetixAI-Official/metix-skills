@@ -358,7 +358,7 @@
       "ceil(profile_ids.length / 25)",
       "5 + ceil",
       "/v1/people/query",
-      "each composer takes a non-empty array",
+      "`not` takes one condition, or an array",
       "ceil(found / 5)",
       "/entity/v1/profiles/detail-by-id"
     ],
@@ -368,5 +368,6 @@
       "ceil(found / 5)",
       "coming soon"
     ]
-  }
+  },
+  "contractHash": "c77a26878a7fc7dd"
 }

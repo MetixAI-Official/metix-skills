@@ -62,14 +62,21 @@ All are `POST` unless noted. This list is the complete public surface.
 |---|---|---|
 | `/v1/people/query` | `profile_ids`, `total`, optional `next` | Boolean Query Spec. The structured route for people. |
 | `/v1/people-search` | `profile_ids` | Natural language. Takes `text`. Use when the constraint set is awkward to express as fields. |
-| `/v1/jobs/query` | `job_ids`, optional `next` | Boolean Query Spec over active postings. |
-| `/v1/companies/query` | `company_ids`, optional `next` | Boolean Query Spec over organizations. |
+| `/v1/jobs/query` | `job_ids`, `total`, optional `next` | Boolean Query Spec over active postings. |
+| `/v1/companies/query` | `company_ids`, `total`, optional `next` | Boolean Query Spec over organizations. |
 
-`/v1/people/query` is the only search that returns `total`. It is an integer
-below 10,000 and the string `"10000+"` at or above that band, so a caller that
-assumes an integer breaks on large result sets.
+Every Query Spec search returns `total`. It is an integer below 100,000 and the
+string `"100000+"` at or above that band, so a caller that assumes an integer
+breaks on large result sets. The natural-language route returns ids only.
 
-Public keys default to `size: 1000` and cannot exceed 1000.
+`total` counts what matched, not what came back. A search with `size: 25` over
+four thousand matches answers `"total": 4000` and hands you 25 ids: page with
+`after` to reach the rest, and read `total` to decide whether the filter is
+narrow enough to be worth paging at all.
+
+Omitting `size` returns 100. The maximum is 10,000, and every result costs
+Credits at the published rate, so a wide `size` is a wide bill: ask for the
+page you intend to read.
 
 ### Detail: returns records
 
@@ -91,9 +98,59 @@ and `results` (the records). Read the records from `results`:
 Detail calls with `found: 0` are not charged. Empty searches are also free; AI
 people search is the exception and retains its 5-Credit base charge.
 
-A job document carries `company_id`. That value is a company token, so it goes
-straight to `/entity/v1/companies/detail-by-id`, so you do not have to search
-for the employer by name.
+#### Choosing which fields come back
+
+Every detail route takes an optional `_source`: an array of field names. Omit it
+and you get the default record. Name fields and you get exactly those, which is
+how you make a response smaller, and it is also the only way to reach the fields
+that are publishable but not in the default set.
+
+```json
+{"profile_ids": ["..."], "_source": ["profile_id", "full_name", "summary", "github_url"]}
+```
+
+A profile record carries more than the default response shows. The rest is
+reached by naming it, and the larger groups are:
+
+- the subject's own links: `github_url`, `twitter_url`, `facebook_url`,
+  `crunchbase_url`, `website`
+- their own prose: `summary`, `headline`, `experience.description`,
+  `education.description`
+- their employer as a company: `experience.company_id`,
+  `experience.company_website`, `experience.company_linkedin_url`,
+  `experience.company_employees_count`, `experience.company_is_b2b`,
+  `experience.company_categories_and_keywords`
+- their institution: `education.institution_url`, `education.institution_rank`,
+  `education.institution_country_iso2`
+- counts and totals: `connections_count`, `followers_count`,
+  `total_experience_duration_months`, `last_graduation_date`,
+  `education_degrees`
+- the current job, denormalised: `active_experience_department`,
+  `active_experience_management_level`
+
+`experience.company_id` is a **company** identifier. Send it to
+`/entity/v1/companies/detail-by-id`, not to the profile route, and do not expect
+it to look like a `profile_id`. It is a token of the same shape as every other
+id here, so the only thing telling you which route it belongs to is its name.
+
+The field list below is the field list. A name that is not on it is refused with
+a 400, so a typo is visible rather than silently returning a record without it.
+
+Prose fields carry no email addresses or phone numbers. Contact data is a
+separate surface with its own pricing; it is not part of a summary.
+
+A job document carries `company_id`, and a profile carries one on each
+`experience` entry. Both are company tokens: send them to
+`/entity/v1/companies/detail-by-id` and you reach the employer without searching
+for it by name.
+
+**Name them in `_source`.** Neither is in the default record, so a detail call
+that does not ask for the field comes back without it — which reads as "this job
+has no company" rather than as "you did not ask":
+
+```json
+{"job_ids": ["..."], "_source": ["id", "title", "company_name", "company_id"]}
+```
 
 ## Query Spec
 
@@ -128,7 +185,8 @@ operator**. A bounded range is therefore an `all` of two leaves, not `gte` and
 ]}
 ```
 
-Composers: `all`, `any`, `not`; each composer takes a non-empty array.
+Composers: `all`, `any`, `not`. `all` and `any` take a non-empty array of
+conditions; `not` takes one condition, or an array, and negates all of it.
 Operators: `eq`, `exists`, `gte`, `in`, `lte`, `match`.
 
 `eq`, `in`, and `match` all compare a value, but **the operator does not decide
@@ -140,13 +198,165 @@ below under the behaviour it actually has. `in` applies that same comparison
 across a list and succeeds on any member. `exists` takes a boolean. Numeric and
 date fields take `gte`, `lte`, or `exists` instead, and reject the other three.
 
+**Exact fields are case-sensitive.** The comparison is against the whole stored
+value, character for character, so `"director"` matches nothing where
+`"Director"` matches. This is the one mistake in the whole grammar that does not
+raise an error: the query is valid, it simply matches no records, and a result of
+zero reads as "nobody like that exists" rather than "wrong case". Copy the
+casing from the controlled values below.
+
+Text fields are not case-sensitive, so `active_department` accepts
+`"human resources"`. The value still has to be one of the listed ones.
+
+#### Controlled values
+
+Eight fields draw from a fixed list. Anything outside the list matches nothing,
+and matching is exact including case, so copy these rather than retyping them.
+Several values contain commas — `Oil, Gas, and Mining` is one value, not three —
+which is why they are listed one per line rather than run together.
+
+Every set below was read off the index the search actually uses, and every value
+returns records.
+
+**People — `management_level`, and `level` inside `has_experience`**
+
+- `Specialist`
+- `Senior`
+- `Manager`
+- `Head`
+- `Director`
+- `Vice President`
+- `President/Vice President`
+- `C-Level`
+- `Partner`
+- `Founder`
+- `Owner`
+- `Intern`
+
+**People — `active_department`**
+
+- `Administrative`
+- `C-Suite`
+- `Consulting`
+- `Customer Service`
+- `Design`
+- `Education`
+- `Engineering and Technical`
+- `Finance & Accounting`
+- `General Management`
+- `Human Resources`
+- `Legal`
+- `Marketing`
+- `Medical`
+- `Operations`
+- `Other`
+- `Product`
+- `Project Management`
+- `Real Estate`
+- `Research`
+- `Sales`
+- `Trades`
+
+**People — `industry` inside `has_experience`.** A company's own `industry` is a
+different and much longer vocabulary; this twenty-value set is the one attached
+to a person's jobs.
+
+- `Accommodation Services`
+- `Administrative and Support Services`
+- `Construction`
+- `Consumer Services`
+- `Education`
+- `Entertainment Providers`
+- `Farming, Ranching, Forestry`
+- `Financial Services`
+- `Government Administration`
+- `Holding Companies`
+- `Hospitals and Health Care`
+- `Manufacturing`
+- `Oil, Gas, and Mining`
+- `Professional Services`
+- `Real Estate and Equipment Rental Services`
+- `Retail`
+- `Technology, Information and Media`
+- `Transportation, Logistics, Supply Chain and Storage`
+- `Utilities`
+- `Wholesale`
+
+**Jobs — `seniority`**
+
+- `Associate`
+- `Director`
+- `Entry level`
+- `Executive`
+- `Internship`
+- `Mid-Senior level`
+- `Not Applicable`
+
+**Jobs — `employment_type`**
+
+- `Contract`
+- `Full-time`
+- `Internship`
+- `Other`
+- `Part-time`
+- `Temporary`
+- `Volunteer`
+
+**Companies — `size_range`**
+
+- `Myself Only`
+- `1-10 employees`
+- `11-50 employees`
+- `51-200 employees`
+- `201-500 employees`
+- `501-1000 employees`
+- `1001-5000 employees`
+- `5001-10,000 employees`
+- `10,001+ employees`
+
+**Companies — `type`**
+
+- `Privately Held`
+- `Public Company`
+- `Partnership`
+- `Nonprofit`
+- `Educational`
+- `Government Agency`
+- `Self-Employed`
+- `Self-Owned`
+
+Not every category field is a fixed set. A company's `industry` runs to over
+three hundred values, and a job's `functions` and `industries` to several
+hundred each. Ask those with `match` and expect a long tail.
+
+Yes/no fields take `true` or `false`: `is_working`, `is_decision_maker`,
+`is_current`, `is_studying`, `is_b2b`, and `application_active`. `1` and `0`
+are accepted for all of them too, because two of the six are stored that way
+and which two is not something a caller should have to know.
+
+**Asking one of them for `false` is not the same question on all six.** A field
+that is only written when it is true has no `false` to match; it is absent
+instead, and absent is not something `eq` can ask for. Read off the indexes the
+search actually uses:
+
+| Field | How to ask for no |
+|---|---|
+| `is_working`, `is_decision_maker`, `is_current` | `false`. Both answers are stored. |
+| `is_studying`, `is_b2b` | `{"not": {"field": "...", "eq": true}}`. `eq false` matches nothing. |
+| `application_active` | Nothing to ask. Every posting in the index is active, so the condition removes no results. |
+
+Like the wrong case, the first form is a valid query that costs nothing and
+returns zero, which reads as an answer about the data rather than about the
+query. `{"where": {"not": {"field": "is_b2b", "eq": true}}}` is how you ask for
+the companies that are not B2B.
+
 Date fields take `YYYY-MM-DD` or a relative form: `now`, `now-30d`, `now-6m`,
 `now-2y`. The maximum offsets are `7300d`, `240m`, and `20y`. Relative values
 resolve server-side to an absolute date before the query is built.
 
-Unknown or unpublished field names, unknown operators, and malformed nodes all
-fail through one generic validation outlet, so a field that does not exist and a
-field that exists but is not published are deliberately indistinguishable.
+A field name that is not in the list below, an operator that is not one of the
+six, and a malformed node all return the same 400. Check the name against the
+list for the entity you are querying: the three do not share one.
 
 ### People query fields
 
@@ -170,8 +380,8 @@ Date fields: `ended_at`, `started_at`.
 
 People are the only entity with same-record scopes. A profile holds many jobs
 and many degrees, and every condition inside one scope must match the *same*
-record: "one job that is both Google and director" rather than "some job at
-Google, and some job as director". Scopes: `has_education`, `has_experience`,
+record: "one job that is both Google and Director" rather than "some job at
+Google, and some job as Director". Scopes: `has_education`, `has_experience`,
 `has_language`.
 
 - `has_education` fields: `degree_level`, `graduation_year`,
@@ -190,7 +400,7 @@ Google, and some job as director". Scopes: `has_education`, `has_experience`,
       {"field": "country", "eq": "United States"},
       {"has_experience": {"all": [
         {"field": "company_name", "match": "Google"},
-        {"field": "level", "eq": "director"},
+        {"field": "level", "eq": "Director"},
         {"field": "is_current", "eq": true}
       ]}},
       {"not": [{"field": "skills", "eq": "php"}]}
@@ -268,8 +478,46 @@ selected into one.
 
 | Endpoint | Notes |
 |---|---|
-| `GET /version` | No auth. Returns `version` and `build_sha`. |
+| `GET /version` | No auth. Returns `version` and `contract_hash`. |
 | `GET /auth/key/status` | Your key's scopes, rate limit, and remaining quota. |
+| `GET /contract` | The contract this deployment serves, as JSON. Free. |
+
+## Checking you are current
+
+These files describe one version of the contract. The service reports which one
+it is serving, so the two can be compared rather than assumed.
+
+```bash
+curl -s https://mira-api.metix.ai/version
+# {"code":200,"msg":"ok","data":{"version":"2.1.2","contract_hash":"..."}}
+```
+
+**This document was written against `contract_hash` `c77a26878a7fc7dd`.**
+
+`contract_hash` fingerprints the published contract. It changes when a route, a
+parameter, a limit or a documented response shape changes, and not otherwise, so
+a value that matches means these files still describe what is being served.
+
+`GET /contract` returns that contract as JSON: every route, its parameters and
+limits, and the query vocabulary for each dataset. It takes your key and costs
+nothing. It is generated from the running service, so it describes what is being
+served rather than what a document said when it was written.
+
+Read it when these files and the service disagree, and when you need a field list
+you can parse rather than one you have to read. The `contract_hash` it carries is
+over its own body without `contract_hash` itself, so it can be recomputed and
+checked rather than taken on trust. Every key gets the same contract and the same
+hash, and `GET /version` reports that same value.
+
+If it does not match, reinstall before debugging further:
+
+```bash
+npx skills add MetixAI-Official/metix-skills
+```
+
+A mismatch is worth checking first whenever a request that these files say
+should work does not: an endpoint that answers 404, a field name refused with a
+400, or a response missing something documented here. Quote the `trace_id` from the failing response when reporting it.
 
 ## Errors
 

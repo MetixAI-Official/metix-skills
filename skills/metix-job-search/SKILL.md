@@ -22,7 +22,7 @@ curl -X POST "https://mira-api.metix.ai/v1/jobs/query" \
   -d '{
     "where": {"all": [
       {"field": "title", "match": "platform engineer"},
-      {"field": "city", "eq": "Berlin"},
+      {"field": "city", "eq": "Austin"},
       {"field": "posted", "gte": "now-30d"}
     ]},
     "size": 100
@@ -42,7 +42,9 @@ Job text fields: `city`, `company_name`, `country`, `description`,
 `employment_type`, `functions`, `industries`, `location`, `regions`,
 `salary_currency`, `seniority`, `state`, `title`.
 
-Job exact fields: `application_active`, `country_iso_2`.
+Job exact fields: `application_active`, `country_iso_2`. Every posting in the
+index is active, so `application_active` narrows nothing; filter on dates
+instead if you want recent postings.
 
 Job numeric fields: `applicants_count`, `required_months_of_experience`,
 `salary_max`, `salary_min`.
@@ -50,8 +52,8 @@ Job numeric fields: `applicants_count`, `required_months_of_experience`,
 Job date fields: `created_at`, `posted`, `updated_at`.
 
 Almost everything on a job is a text field, which is why `{"field": "city",
-"eq": "Berlin"}` still behaves as a text match here while the same leaf on a
-profile is exact.
+"eq": "Austin"}` still behaves as a text match here while the same leaf on a
+profile is exact, and case-sensitive with it.
 
 Date fields take `YYYY-MM-DD` or a relative form such as `now-30d`, which is how
 you ask for recent postings. `country_iso_2` is the two-letter ISO 3166-1 code

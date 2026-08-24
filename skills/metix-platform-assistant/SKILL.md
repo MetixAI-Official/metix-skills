@@ -84,7 +84,5 @@ capabilities above and reason over them yourself. Do not go looking for a
 scoring route, and do not guess at a path.
 
 The endpoint list in `references/api-reference.md` is the complete supported
-public data surface for these Skills. Routes that used to exist are gone rather
-than hidden, so a path you remember and cannot find in that file will 404. Do
-not invent paths, do not probe for internal capabilities, and use the documented
-public route instead.
+public data surface for these Skills. A path you remember and cannot find in that
+file will 404. Do not invent paths; use the documented route instead.

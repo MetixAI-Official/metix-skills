@@ -152,6 +152,39 @@ function requireGroups(label, document, groups) {
 }
 
 const apiReference = fs.readFileSync(path.join(repoRoot, "references/api-reference.md"), "utf8");
+
+// The contract fingerprint these files were written against.
+//
+// It is quoted in prose, where a reader and an agent both see it, and it is the
+// one number here that goes stale silently: the API keeps serving, the skills
+// keep installing, and the only symptom is a request that the documentation
+// says should work. Pinning it in contract-facts.json means the two copies have
+// to move together, and the deploy checklist has one place to update.
+{
+  const quoted = /contract_hash` `([0-9a-f]{16})`/.exec(apiReference);
+  if (!quoted) {
+    fail("api-reference.md no longer states the contract_hash it was written against");
+  } else if (quoted[1] !== facts.contractHash) {
+    fail(
+      `api-reference.md says contract_hash ${quoted[1]}, contract-facts.json says ${facts.contractHash}`,
+    );
+  }
+
+  // And both against what the API actually produces. Comparing the two copies
+  // here to each other passes happily when both are equally stale, which is how
+  // a hash pinned in prose goes wrong: nothing disagrees, and the only symptom
+  // is a reader comparing their /version against a number that was true last
+  // month. The exporter writes this file; it is the value, not a third copy.
+  const identityPath = "../mira-api/app/contracts/current/contract-identity.json";
+  if (fs.existsSync(identityPath)) {
+    const identity = JSON.parse(fs.readFileSync(identityPath, "utf8"));
+    if (identity.contractHash !== facts.contractHash) {
+      fail(
+        `contract-facts.json pins ${facts.contractHash}, mira-api produces ${identity.contractHash}`,
+      );
+    }
+  }
+}
 const peopleSearchSkill = fs.readFileSync(path.join(repoRoot, "skills/metix-people-search/SKILL.md"), "utf8");
 const jobSearchSkill = fs.readFileSync(path.join(repoRoot, "skills/metix-job-search/SKILL.md"), "utf8");
 const companySearchSkill = fs.readFileSync(path.join(repoRoot, "skills/metix-company-search/SKILL.md"), "utf8");
