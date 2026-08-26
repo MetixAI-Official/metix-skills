@@ -101,9 +101,9 @@ The exact Query fields are:
   `major`, `patents`, `publications`, `skills`, `title`.
 - Exact fields: `city`, `company_type`, `country`, `country_iso2`,
   `country_iso3`, `first_name`, `full_name`, `industry`, `is_current`,
-  `is_decision_maker`, `is_studying`, `is_working`, `last_name`, `level`,
-  `linkedin_url`, `management_level`, `regions`, `role`, `state`,
-  `workplace_city`, `workplace_country`, `workplace_state`.
+  `is_decision_maker`, `is_studying`, `is_working`, `language_proficiency`,
+  `last_name`, `level`, `linkedin_url`, `management_level`, `regions`, `role`,
+  `state`, `workplace_city`, `workplace_country`, `workplace_state`.
 - Numeric fields: `company_employees_count`, `company_size_range`,
   `degree_level`, `duration_months`, `experience_months`, `graduation_year`,
   `institution_ranking`, `study_start_year`.
@@ -122,7 +122,65 @@ Director".
   `company_size_range`, `company_type`, `duration_months`, `ended_at`,
   `industry`, `is_current`, `level`, `role`, `started_at`, `title`,
   `workplace_city`, `workplace_country`, `workplace_state`.
-- `has_language` fields: `languages`.
+- `has_language` fields: `language_proficiency`, `languages`.
+
+`has_language` is a scope like the other two, so the field goes *inside* it.
+`{"field": "languages", "has_language": "Mandarin"}` is not a leaf and is
+rejected. The shape is:
+
+```json
+{"has_language": {"all": [{"field": "languages", "eq": "Chinese"}]}}
+```
+
+Write the language in English and the server matches every way profiles write
+it. People fill this field in their own language, so one language is stored
+under many spellings, and some of what a name covers is stored under other names
+entirely — asking for `Chinese` reaches Mandarin and Cantonese speakers too,
+which is what someone asking that question means. Ask for `Mandarin` or
+`Cantonese` by name when the distinction is the point. A language the vocabulary
+has not met is searched for exactly as written, so nothing is refused for being
+uncommon.
+
+`language_proficiency` filters how well one language is spoken. The scale has
+exactly five values, lowest to highest, and these are the only ones accepted:
+
+- `Elementary proficiency`
+- `Limited working proficiency`
+- `Professional working proficiency`
+- `Full professional proficiency`
+- `Native or bilingual proficiency`
+
+Records carry the same five strings, so a level you read is a level you can
+filter on. Capitalisation does not matter; nothing else is accepted, including
+numbers and words like `fluent` or `advanced`, because those mean a different
+level to different people and a filter that picks one without saying so is not
+something a caller can reason about.
+
+Inside `has_language` the level applies to the language named beside it;
+outside, it means any language on the profile.
+
+Language is often the field that answers a question someone first phrases as
+something else. "Who can take this call in Mandarin" is `has_language`, and so
+is a request framed around where somebody is from, which this answers directly
+and better, because it is the thing that actually bears on the work.
+
+```json
+{"where": {"all": [
+  {"has_experience": {"all": [
+    {"field": "company_name", "match": "Apple"},
+    {"field": "title", "match": "design"},
+    {"field": "is_current", "eq": true}
+  ]}},
+  {"has_language": {"all": [
+    {"field": "languages", "eq": "Chinese"},
+    {"field": "language_proficiency", "eq": "Professional working proficiency"}
+  ]}},
+  {"field": "country", "eq": "United States"}
+]}, "size": 25}
+```
+
+Both conditions sit in the same `has_language`, so the level is required of the
+Chinese entry rather than of some other language on the profile.
 
 A scoped field used on its own outside a scope means "any record on this
 profile". Suffixed names `experience_months_min`, `experience_months_max`,

@@ -109,6 +109,24 @@ that are publishable but not in the default set.
 {"profile_ids": ["..."], "_source": ["profile_id", "full_name", "summary", "github_url"]}
 ```
 
+`languages` is worth naming explicitly the first time you filter on it, because
+the values are stored as each profile writes them:
+
+```json
+{"profile_ids": ["..."], "_source": ["profile_id", "full_name", "languages"]}
+```
+
+```json
+{"languages": [{"language": "English", "order_in_profile": 1},
+               {"language": "Spanish", "order_in_profile": 2}]}
+```
+
+The same language appears as `English` on one record and `Inglés` on another,
+and `Mandarin`, `Cantonese` and `Chinese` are three values rather than one. Read
+a few records before building a `has_language` filter, then pass the spellings
+you saw with `in`. A filter on one spelling returns a real but partial set, and
+nothing in the response says so.
+
 A profile record carries more than the default response shows. The rest is
 reached by naming it, and the larger groups are:
 
@@ -204,6 +222,11 @@ value, character for character, so `"director"` matches nothing where
 raise an error: the query is valid, it simply matches no records, and a result of
 zero reads as "nobody like that exists" rather than "wrong case". Copy the
 casing from the controlled values below.
+
+`language_proficiency` is the exception, and the only one: capitalisation is not
+part of its comparison, so `native or bilingual proficiency` and
+`Native or bilingual proficiency` reach the same records. Its five values are
+listed under the scopes below.
 
 Text fields are not case-sensitive, so `active_department` accepts
 `"human resources"`. The value still has to be one of the listed ones.
@@ -368,9 +391,9 @@ Text fields: `active_department`, `active_title`, `awards`, `certifications`,
 
 Exact fields: `city`, `company_type`, `country`, `country_iso2`,
 `country_iso3`, `first_name`, `full_name`, `industry`, `is_current`,
-`is_decision_maker`, `is_studying`, `is_working`, `last_name`, `level`,
-`linkedin_url`, `management_level`, `regions`, `role`, `state`,
-`workplace_city`, `workplace_country`, `workplace_state`.
+`is_decision_maker`, `is_studying`, `is_working`, `language_proficiency`,
+`last_name`, `level`, `linkedin_url`, `management_level`, `regions`, `role`,
+`state`, `workplace_city`, `workplace_country`, `workplace_state`.
 
 Numeric fields: `company_employees_count`, `company_size_range`,
 `degree_level`, `duration_months`, `experience_months`, `graduation_year`,
@@ -391,7 +414,33 @@ Google, and some job as Director". Scopes: `has_education`, `has_experience`,
   `company_size_range`, `company_type`, `duration_months`, `ended_at`,
   `industry`, `is_current`, `level`, `role`, `started_at`, `title`,
   `workplace_city`, `workplace_country`, `workplace_state`.
-- `has_language` fields: `languages`.
+- `has_language` fields: `language_proficiency`, `languages`.
+
+The field goes inside the scope:
+`{"has_language": {"all": [{"field": "languages", "eq": "Chinese"}]}}`.
+`{"field": "languages", "has_language": "Chinese"}` is not a leaf and is
+rejected.
+
+Write the language in English. Profiles fill this in their own language, so one
+language is stored under many spellings and the server matches all of them;
+`Chinese` also reaches Mandarin and Cantonese speakers, and `Mandarin` or
+`Cantonese` narrow it when that is the point. A language the vocabulary has not
+met is searched for as written.
+
+`language_proficiency` has exactly five values, lowest to highest, and nothing
+else is accepted:
+
+- `Elementary proficiency`
+- `Limited working proficiency`
+- `Professional working proficiency`
+- `Full professional proficiency`
+- `Native or bilingual proficiency`
+
+Records carry the same five strings, so a level you read is a level you can
+filter on. Numbers and words like `fluent` or `advanced` are refused, because
+they mean a different level to different readers. Put it in the same
+`has_language` as the language it qualifies, or the level will be satisfied by
+any language on the profile.
 
 ```json
 {
@@ -492,7 +541,7 @@ curl -s https://mira-api.metix.ai/version
 # {"code":200,"msg":"ok","data":{"version":"2.1.2","contract_hash":"..."}}
 ```
 
-**This document was written against `contract_hash` `c77a26878a7fc7dd`.**
+**This document was written against `contract_hash` `3e2908cf7f526e62`.**
 
 `contract_hash` fingerprints the published contract. It changes when a route, a
 parameter, a limit or a documented response shape changes, and not otherwise, so

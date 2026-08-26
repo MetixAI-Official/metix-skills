@@ -76,6 +76,7 @@
       "is_decision_maker",
       "is_studying",
       "is_working",
+      "language_proficiency",
       "languages",
       "last_name",
       "level",
@@ -138,6 +139,7 @@
       "is_decision_maker",
       "is_studying",
       "is_working",
+      "language_proficiency",
       "last_name",
       "level",
       "linkedin_url",
@@ -213,6 +215,7 @@
         "workplace_state"
       ],
       "has_language": [
+        "language_proficiency",
         "languages"
       ]
     },
@@ -369,5 +372,5 @@
       "coming soon"
     ]
   },
-  "contractHash": "c77a26878a7fc7dd"
+  "contractHash": "3e2908cf7f526e62"
 }

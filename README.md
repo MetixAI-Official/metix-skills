@@ -16,6 +16,33 @@ npx skills add MetixAI-Official/metix-skills
 
 GitHub is the single distribution point.
 
+### Coming from the OpenJobs skills
+
+The earlier package, `OpenJobsAI/openjobs-openclaw-skills`, is retired. Its
+skills stay loaded in any agent that installed them and describe an API surface
+that has moved on, so an agent holding both will sometimes follow the older one.
+Remove them first:
+
+```bash
+npx skills list                     # what this project has
+npx skills list -g                  # what is installed globally
+
+npx skills remove openjobs-people-search openjobs-company-search \
+  openjobs-jobs-search openjobs-people-match \
+  openjobs-ai-talent-search openjobs-platform-assistant
+```
+
+Add `-g` to work on the global scope. `npx skills remove` with no names opens an
+interactive picker, which is easier if you are not sure what is present. Or hand
+the agent this:
+
+> List every skill you have installed. Remove the ones whose names start with
+> `openjobs-`, check both the project and the global scope, then list what is
+> left so I can confirm.
+
+Your key does not change. If you had `MIRA_KEY` set for the retired package,
+point `METIX_KEY` at the same value.
+
 Then set your key:
 
 ```bash
@@ -130,19 +157,17 @@ calling a tool; tool names are not inferred from REST route names.
 
 ## Contributing
 
-Run all three release checks before opening a pull request:
+Run both release checks before opening a pull request:
 
 ```bash
-scripts/check-public-boundary.sh
 node scripts/check-contracts.mjs ../mira-api/app/contracts/current/api-blueprint.json
 scripts/check-install.sh
 ```
 
-The boundary check rejects internal identifiers and withdrawn capabilities. The
-contract check pins the endpoint prices, the Query Spec vocabulary for people,
+The contract check pins the endpoint prices, the Query Spec vocabulary for people,
 jobs, and companies, which fields are text-matched rather than compared whole,
 and all installed reference copies to Mira's committed contract. It fails when
 that contract is not reachable, because a cross-repo check that quietly skips
 proves only that the docs agree with themselves; pass `--no-blueprint` if you
 genuinely mean to skip it. The install smoke proves a clean `npx skills add`
-produces five self-contained Skills.
+produces four self-contained Skills.
