@@ -40,25 +40,24 @@ the agent this:
 > `openjobs-`, check both the project and the global scope, then list what is
 > left so I can confirm.
 
-Your key does not change. If you had `MIRA_KEY` set for the retired package,
-point `METIX_KEY` at the same value.
+Your key does not change.
 
-Then set your key:
+Then set it:
 
 ```bash
-export METIX_KEY="mira_xxxxxxxxxxxx"
+export METIX_KEY="metix_xxxxxxxxxxxx"
 ```
 
 Create one at [platform.metix.ai/api-keys](https://platform.metix.ai/api-keys).
 The free plan starts with 100 Credits and needs no card.
 
-The variable is `METIX_KEY`, which is what every skill here reads. The Metix AI
-docs write the same key as `MIRA_KEY` in their curl examples, so if you have
-followed those, export it under this name as well:
+`METIX_KEY` is the only variable involved. The skills read it, the MCP server
+reads it, and every example in the Metix AI docs reads it. If you followed an
+older page that said `MIRA_KEY`, rename the variable and change nothing else.
 
-```bash
-export METIX_KEY="$MIRA_KEY"
-```
+A key issued before the rename begins with `mira_` rather than `metix_` and is
+still valid: keys are matched on the whole value, not on the prefix, so there is
+nothing to rotate.
 
 Keep it out of source control and out of anything browser-visible.
 

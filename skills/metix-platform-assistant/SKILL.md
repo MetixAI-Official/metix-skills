@@ -12,6 +12,18 @@ Endpoints, limits, and Credit rules: `references/api-reference.md` and
 `references/credits.md`. Those files are the source of truth. If this skill and
 they disagree, they win.
 
+## The key
+
+Every call reads `METIX_KEY` from the environment.
+
+If `METIX_KEY` is unset, stop and tell the user to set it. Do not substitute a
+different environment variable, and do not go looking for one that resembles a
+key. A machine can hold credentials for more than one account, and a name that
+happens to exist is not the same as the one the user meant: picking it up
+silently spends someone else's balance and reports success while doing it.
+
+Never print the key, write it into a file, or include it in a summary.
+
 ## Three entities, one shape
 
 Metix AI serves people, companies, and jobs. Each has a search that returns

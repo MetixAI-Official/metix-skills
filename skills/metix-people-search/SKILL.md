@@ -12,6 +12,18 @@ as fields.
 Endpoints, limits, and costs: `references/api-reference.md`,
 `references/credits.md`.
 
+## The key
+
+Every call below reads `METIX_KEY` from the environment.
+
+If `METIX_KEY` is unset, stop and tell the user to set it. Do not substitute a
+different environment variable, and do not go looking for one that resembles a
+key. A machine can hold credentials for more than one account, and a name that
+happens to exist is not the same as the one the user meant: picking it up
+silently spends someone else's balance and reports success while doing it.
+
+Never print the key, write it into a file, or include it in a summary.
+
 ## Structured search, the default
 
 `POST /v1/people/query` takes a required `where` tree plus optional `size` and

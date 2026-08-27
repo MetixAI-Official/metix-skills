@@ -2,6 +2,9 @@
 
 Base URL: `https://mira-api.metix.ai`
 Auth: `Authorization: Bearer $METIX_KEY` on every call except `GET /version`.
+`METIX_KEY` is the only variable to read; if it is unset, stop and say so
+rather than reaching for another one. Keys issued today begin with `metix_`,
+and older ones begin with `mira_` and remain valid.
 
 Every response uses the same envelope:
 
