@@ -1,0 +1,83 @@
+{
+  "priceVersion": "usage-pricing-v2026-08-04",
+  "endpoints": {
+    "/v1/people-search": {
+      "formula": "5 + ceil(successful_result_count / 25)",
+      "chargeOn": "2xx",
+      "resultPath": "profile_ids"
+    },
+    "/v1/people/query": {
+      "formula": "ceil(successful_result_count / 25)",
+      "chargeOn": "2xx_with_non_empty_result",
+      "resultPath": "profile_ids"
+    },
+    "/entity/v1/profiles/detail-by-id": {
+      "formula": "ceil(successful_record_count / 5)",
+      "chargeOn": "2xx_with_non_empty_result",
+      "resultPath": "found"
+    },
+    "/v1/jobs/query": {
+      "formula": "ceil(successful_result_count / 25)",
+      "chargeOn": "2xx_with_non_empty_result",
+      "resultPath": "job_ids"
+    },
+    "/entity/v1/jobs/detail-by-id": {
+      "formula": "ceil(successful_record_count / 5)",
+      "chargeOn": "2xx_with_non_empty_result",
+      "resultPath": "found"
+    },
+    "/v1/companies/query": {
+      "formula": "ceil(successful_result_count / 25)",
+      "chargeOn": "2xx_with_non_empty_result",
+      "resultPath": "company_ids"
+    },
+    "/entity/v1/companies/detail-by-id": {
+      "formula": "ceil(successful_record_count / 5)",
+      "chargeOn": "2xx_with_non_empty_result",
+      "resultPath": "found"
+    },
+    "/version": {
+      "chargeOn": "never",
+      "priceVersion": false
+    },
+    "/contract": {
+      "chargeOn": "never",
+      "priceVersion": false
+    },
+    "/auth/key/status": {
+      "chargeOn": "never",
+      "priceVersion": false
+    }
+  },
+  "skills": {
+    "metix-company-search": [
+      "METIX_KEY",
+      "/v1/companies/query",
+      "/contract",
+      "docs_url",
+      "querySpecByEntity"
+    ],
+    "metix-job-search": [
+      "METIX_KEY",
+      "/v1/jobs/query",
+      "/contract",
+      "docs_url",
+      "querySpecByEntity"
+    ],
+    "metix-people-search": [
+      "METIX_KEY",
+      "/v1/people/query",
+      "/entity/v1/profiles/detail-by-id",
+      "/contract",
+      "docs_url",
+      "querySpecByEntity"
+    ],
+    "metix-platform-assistant": [
+      "METIX_KEY",
+      "/contract",
+      "docs_url",
+      "querySpecByEntity",
+      "coming soon"
+    ]
+  }
+}

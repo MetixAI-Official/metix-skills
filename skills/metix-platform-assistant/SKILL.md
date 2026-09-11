@@ -1,0 +1,70 @@
+---
+name: metix-platform-assistant
+description: Use when a task needs Metix AI data across more than one area (people, companies, or jobs) and you must decide which capability to call, in what order, and what it costs. Start here when the request is a goal rather than a single lookup.
+---
+
+# Metix AI platform assistant
+
+Coordinates work across people, companies, and jobs. Use the focused skills for
+a single dataset. Field names and prices come from the live contract and the
+docs pages below, not from this file.
+
+## Resources
+
+```
+API     https://mira-api.metix.ai
+        GET /version            deployed version and contract hash (free)
+        GET /contract           field names, operators, limits (free, needs the key)
+        GET /auth/key/status    key state and remaining Credits (free)
+        GET /docs               tutorial catalog; add .md to any page for Markdown
+        /mcp                    MCP endpoint, same key
+
+Docs    https://mira-api.metix.ai/docs/api/jobs.md
+        https://mira-api.metix.ai/docs/api/people.md
+        https://mira-api.metix.ai/docs/api/companies.md
+        https://mira-api.metix.ai/docs/api/query-spec.md
+        https://mira-api.metix.ai/docs/reference/errors.md
+        https://mira-api.metix.ai/docs/credits.md
+        https://platform.metix.ai/llms.txt
+```
+
+The same pages are rendered for people at `https://platform.metix.ai/docs`.
+
+## How to call
+
+1. `GET /contract` (or MCP `metix_get_contract`). Build each `where` from
+   `querySpecByEntity` for that dataset. The field lists are closed.
+2. Search returns IDs only. Detail returns records, up to 100 IDs at a time.
+   Chain on IDs, not on names: ask for `company_id` in `_source` on a job
+   detail call, and a profile's `experience.company_id` is the same kind of
+   company token. Both resolve at `/entity/v1/companies/detail-by-id`.
+3. On a 4xx, switch on `error_code`; `msg` says what to change. For the full
+   explanation, fetch `docs_url` with `.md` added to the path:
+   `https://platform.metix.ai/docs/reference/errors#query-refusals` becomes
+   `https://platform.metix.ai/docs/reference/errors.md`, and `query-refusals`
+   names the section to read.
+4. If this file and the live contract disagree, the contract wins.
+
+Typical cross-dataset sequence for "senior engineers at companies hiring for ML
+platform roles": jobs query, job detail with `company_id` in `_source`, company
+detail on those tokens, people query on those employers, profile detail on the
+shortlist. Narrow before the last step; that is where Credits concentrate.
+
+## Local rules
+
+Every call reads `METIX_KEY` from the environment. If it is unset, stop and tell
+the user to set it. Do not substitute another variable, and do not search the
+machine for a lookalike key.
+
+Never print the key, write it into a file, or include it in a summary.
+
+Do not invent a contact-email route. That capability is coming soon and has no
+callable route today. If a user asks for an email address, say it is not
+available yet rather than suggesting a workaround.
+
+This API retrieves data. It does not score or rank a person against a role.
+Retrieve the records and reason over them; do not guess at a scoring path.
+
+Credits are charged in result bands. One ID per request is the expensive way to
+walk a set; batch. The formulas live on `/docs/credits.md`. Check
+`GET /auth/key/status` (free) before a run that will pull thousands of records.
