@@ -6,9 +6,10 @@ description: Use when finding professional profiles on Metix AI by role, skills,
 # Metix AI people search
 
 Search returns `profile_ids`. Detail returns the records. Prefer the structured
-Query Spec route; use natural language only when the constraints resist being
-written as fields. Field names, operators, and scopes come from the live
-contract and the docs pages below, not from this file.
+Query Spec route: it is exact, repeatable, and has no base charge. Use natural
+language only when the constraints resist being written as fields; it adds a
+5-Credit base. Field names, operators, and scopes come from the live contract
+and the docs pages below, not from this file.
 
 ## Resources
 
@@ -35,7 +36,9 @@ The same pages are rendered for people at `https://platform.metix.ai/docs`.
 
 1. `GET /contract` (or MCP `metix_get_contract`). Build `where` only from
    `querySpecByEntity.profile`. The field list is closed; a name outside it is
-   refused.
+   refused. Use the operators `fieldOperators` lists for each field: exact
+   fields such as `role`, `level` or `country` take `eq` or `in` with a whole
+   value from the people page, and `match` is only for free-text fields.
 2. `POST /v1/people/query` for a structured tree, or `POST /v1/people-search`
    with `text` (not `query`) when the constraints will not sit on fields. Then
    `POST /entity/v1/profiles/detail-by-id` with up to 100 of those IDs. Search

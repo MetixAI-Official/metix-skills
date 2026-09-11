@@ -34,7 +34,9 @@ The same pages are rendered for people at `https://platform.metix.ai/docs`.
 
 1. `GET /contract` (or MCP `metix_get_contract`). Build `where` only from
    `querySpecByEntity.job`. The field list is closed; a name outside it is
-   refused.
+   refused. Use the operators `fieldOperators` lists for each field: exact
+   fields such as `country_iso_2` or `salary_currency` take `eq` or `in`, and
+   `match` is only for free-text fields such as `title`.
 2. `POST /v1/jobs/query` returns `job_ids`, and a `next` cursor to send back as
    `after` when there are more. `POST /entity/v1/jobs/detail-by-id` with up to
    100 of those IDs returns the postings. Search never returns records.

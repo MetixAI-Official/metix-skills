@@ -33,7 +33,9 @@ The same pages are rendered for people at `https://platform.metix.ai/docs`.
 ## How to call
 
 1. `GET /contract` (or MCP `metix_get_contract`). Build each `where` from
-   `querySpecByEntity` for that dataset. The field lists are closed.
+   `querySpecByEntity` for that dataset. The field lists are closed. Use the
+   operators `fieldOperators` lists for each field: exact fields take `eq` or
+   `in` with a whole value, and `match` is only for free-text fields.
 2. Search returns IDs only. Detail returns records, up to 100 IDs at a time.
    Chain on IDs, not on names: ask for `company_id` in `_source` on a job
    detail call, and a profile's `experience.company_id` is the same kind of

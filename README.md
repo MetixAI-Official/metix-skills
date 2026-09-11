@@ -88,10 +88,16 @@ On a 4xx, switch on `error_code`; `msg` says what to change. `docs_url` points a
 the page that explains the failure, and the same URL with `.md` added to the
 path is its Markdown form.
 
-Ids are encrypted and **permanently stable**. Store them and reuse them later.
-The Query Spec endpoints hand back a `next` cursor when more pages exist, which
-you send as `after` to resume. A job record reaches its employer through
-`company_id`, which you ask for in `_source` on the detail call.
+An id never changes, so you can store it and read the record later with the
+same detail call. A record can leave the index (a job posting closes, for
+example), and its id then comes back in `not_found`. The Query Spec endpoints
+hand back a `next` cursor when more pages exist; send it unchanged as `after`
+to resume. A job record reaches its employer through `company_id`, which you
+ask for in `_source` on the detail call.
+
+Exact fields such as a person's `role` or `country` take `eq` or `in` with the
+whole stored value, and refuse `match`; free-text fields take `match`. The
+contract lists the operators for every field under `fieldOperators`.
 
 ## Credits
 
@@ -117,7 +123,7 @@ environment reference instead of writing its value into configuration:
 ```json
 {
   "mcpServers": {
-    "mira-api": {
+    "metix": {
       "type": "http",
       "url": "https://mira-api.metix.ai/mcp",
       "headers": { "Authorization": "Bearer ${METIX_KEY}" }
@@ -127,9 +133,9 @@ environment reference instead of writing its value into configuration:
 ```
 
 Client formats differ, so translate the same URL and header facts rather than
-copying this JSON into another client. Read the running MCP schema before
-calling a tool; tool names are not inferred from REST route names. Call
-`metix_get_contract` first.
+copying this JSON into another client. The ten tools are listed at
+`https://platform.metix.ai/docs/mcp#tools`, and `tools/list` returns them with
+their input schemas. Call `metix_get_contract` first.
 
 ## Contributing
 
@@ -142,7 +148,7 @@ scripts/check-install.sh
 
 The contract check confirms each skill points at the production API and its docs
 pages, that no published file names a host outside `metix.ai`, and that endpoint
-prices in `contract-facts.json` still match Mira's committed blueprint. It does
+prices in `contract-facts.json` still match the API's committed blueprint. It does
 not pin a `contract_hash` and it does not require field tables in `SKILL.md`.
 Pass `--no-blueprint` only if you genuinely mean to skip the price check. The
 install smoke proves a clean `npx skills add` produces four pointer skills.
