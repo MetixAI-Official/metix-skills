@@ -54,6 +54,25 @@ it to `/entity/v1/companies/detail-by-id`. `_source` returns exactly the fields
 you list, so list the others you need as well. Do not search for the employer by
 name.
 
+## A first call
+
+```bash
+curl -s https://mira-api.metix.ai/v1/jobs/query \
+  -H "Authorization: Bearer $METIX_KEY" -H "Content-Type: application/json" \
+  -d '{"where": {"all": [
+        {"field": "title", "match": "data engineer"},
+        {"field": "posted_date", "gte": "now-30d"}]},
+       "size": 25}'
+# data.job_ids, data.total, and data.next while more pages remain
+
+curl -s https://mira-api.metix.ai/entity/v1/jobs/detail-by-id \
+  -H "Authorization: Bearer $METIX_KEY" -H "Content-Type: application/json" \
+  -d '{"job_ids": ["<an id from data.job_ids>"],
+       "_source": ["id", "title", "posted_date", "company.id", "company.name"]}'
+```
+
+For the next page, send `data.next` back as `after` with the same `where`.
+
 ## Local rules
 
 Every call reads `METIX_KEY` from the environment. If it is unset, stop and tell

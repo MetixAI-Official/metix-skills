@@ -48,6 +48,25 @@ The same pages are rendered for people at `https://platform.metix.ai/docs`.
    names the section to read.
 4. If this file and the live contract disagree, the contract wins.
 
+## A first call
+
+```bash
+curl -s https://mira-api.metix.ai/v1/companies/query \
+  -H "Authorization: Bearer $METIX_KEY" -H "Content-Type: application/json" \
+  -d '{"where": {"all": [
+        {"field": "industry", "match": "biotechnology"},
+        {"field": "size", "gte": "51-200"}]},
+       "size": 25}'
+# data.company_ids, data.total, and data.next while more pages remain
+
+curl -s https://mira-api.metix.ai/entity/v1/companies/detail-by-id \
+  -H "Authorization: Bearer $METIX_KEY" -H "Content-Type: application/json" \
+  -d '{"company_ids": ["<an id from data.company_ids>"],
+       "_source": ["id", "name", "industry", "size", "headquarters.country"]}'
+```
+
+For the next page, send `data.next` back as `after` with the same `where`.
+
 ## Local rules
 
 Every call reads `METIX_KEY` from the environment. If it is unset, stop and tell

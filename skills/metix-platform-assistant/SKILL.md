@@ -52,6 +52,23 @@ platform roles": jobs query, job detail with `company.id` in `_source`, company
 detail on those tokens, people query on those employers, profile detail on the
 shortlist. Narrow before the last step; that is where Credits concentrate.
 
+## A first chain
+
+A job's employer, by token rather than by name:
+
+```bash
+curl -s https://mira-api.metix.ai/entity/v1/jobs/detail-by-id \
+  -H "Authorization: Bearer $METIX_KEY" -H "Content-Type: application/json" \
+  -d '{"job_ids": ["<an id from /v1/jobs/query>"], "_source": ["title", "company.id"]}'
+
+curl -s https://mira-api.metix.ai/entity/v1/companies/detail-by-id \
+  -H "Authorization: Bearer $METIX_KEY" -H "Content-Type: application/json" \
+  -d '{"company_ids": ["<company.id from the job record>"]}'
+```
+
+Each search route takes `{"where": ..., "size": 25}`; the focused skills show
+one for each dataset.
+
 ## Local rules
 
 Every call reads `METIX_KEY` from the environment. If it is unset, stop and tell

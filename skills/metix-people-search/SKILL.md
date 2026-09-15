@@ -51,6 +51,30 @@ The same pages are rendered for people at `https://platform.metix.ai/docs`.
    names the section to read.
 4. If this file and the live contract disagree, the contract wins.
 
+## A first call
+
+Search, then read the records. `location.country` is an exact field: it takes
+the whole country name with `eq` or `in`, and refuses `match`.
+
+```bash
+curl -s https://mira-api.metix.ai/v1/people/query \
+  -H "Authorization: Bearer $METIX_KEY" -H "Content-Type: application/json" \
+  -d '{"where": {"all": [
+        {"field": "current_title", "match": "data engineer"},
+        {"field": "location.country", "eq": "United States"}]},
+       "size": 25}'
+# data.profile_ids, data.total, and data.next while more pages remain
+
+curl -s https://mira-api.metix.ai/entity/v1/profiles/detail-by-id \
+  -H "Authorization: Bearer $METIX_KEY" -H "Content-Type: application/json" \
+  -d '{"profile_ids": ["<an id from data.profile_ids>"],
+       "_source": ["profile_id", "full_name", "current_title", "location.country"]}'
+```
+
+For the next page, send `data.next` back as `after` with the same `where`.
+`POST /v1/people-search` takes `text` and `size` only, and returns
+`profile_ids` with no `total` and no `next`.
+
 ## Local rules
 
 Every call reads `METIX_KEY` from the environment. If it is unset, stop and tell

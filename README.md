@@ -17,7 +17,9 @@ disagree, the contract wins.
 npx skills add MetixAI-Official/metix-skills
 ```
 
-GitHub is the single distribution point.
+GitHub is the single distribution point. The installer asks which skills and
+which agents to install for; `--agent claude-code` installs into
+`.claude/skills` for Claude Code alone.
 
 ### Coming from the OpenJobs skills
 
@@ -117,6 +119,12 @@ Metix AI API and uses the same key and Credit rules.
 Streamable HTTP endpoint: `https://mira-api.metix.ai/mcp`; legacy SSE endpoint:
 `https://mira-api.metix.ai/sse`. A client negotiates the protocol version with
 the server and must send `Authorization: Bearer <Metix AI API key>`.
+
+A client that speaks streamable HTTP by hand, with curl for example, must also
+send `Accept: application/json, text/event-stream`, or the server answers 406. A
+legacy SSE session lasts as long as its `GET /sse` stream stays open; a POST
+after that stream closes answers 404 `Could not find session`, so open `/sse`
+again.
 
 For example, a project-scoped Claude Code `.mcp.json` can keep the key as an
 environment reference instead of writing its value into configuration:
