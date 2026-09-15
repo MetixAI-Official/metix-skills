@@ -92,12 +92,13 @@ An id never changes, so you can store it and read the record later with the
 same detail call. A record can leave the index (a job posting closes, for
 example), and its id then comes back in `not_found`. The Query Spec endpoints
 hand back a `next` cursor when more pages exist; send it unchanged as `after`
-to resume. A job record reaches its employer through `company_id`, which you
+to resume. A job record reaches its employer through `company.id`, which you
 ask for in `_source` on the detail call.
 
-Exact fields such as a person's `role` or `country` take `eq` or `in` with the
-whole stored value, and refuse `match`; free-text fields take `match`. The
-contract lists the operators for every field under `fieldOperators`.
+Exact fields such as a person's `experience.function` or `location.country`
+take `eq` or `in` with the whole stored value, and refuse `match`; free-text
+fields take `match`. The contract lists the operators for every field under
+`fieldOperators`.
 
 ## Credits
 

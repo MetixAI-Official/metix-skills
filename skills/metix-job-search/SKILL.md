@@ -35,8 +35,10 @@ The same pages are rendered for people at `https://platform.metix.ai/docs`.
 1. `GET /contract` (or MCP `metix_get_contract`). Build `where` only from
    `querySpecByEntity.job`. The field list is closed; a name outside it is
    refused. Use the operators `fieldOperators` lists for each field: exact
-   fields such as `country_iso_2` or `salary_currency` take `eq` or `in`, and
-   `match` is only for free-text fields such as `title`.
+   fields such as `salary.currency` or `salary.period` take `eq` or `in`, and
+   `match` is only for free-text fields such as `title`. A salary comparison
+   (`gte`, `gt`, `lte` or `lt` on `salary.annual_min` or `salary.annual_max`)
+   needs `salary.currency` with `eq` or `in` in the same `all`.
 2. `POST /v1/jobs/query` returns `job_ids`, and a `next` cursor to send back as
    `after` when there are more. `POST /entity/v1/jobs/detail-by-id` with up to
    100 of those IDs returns the postings. Search never returns records.
@@ -47,7 +49,7 @@ The same pages are rendered for people at `https://platform.metix.ai/docs`.
    names the section to read.
 4. If this file and the live contract disagree, the contract wins.
 
-To reach the employer, add `company_id` to `_source` on the detail call and send
+To reach the employer, add `company.id` to `_source` on the detail call and send
 it to `/entity/v1/companies/detail-by-id`. `_source` returns exactly the fields
 you list, so list the others you need as well. Do not search for the employer by
 name.

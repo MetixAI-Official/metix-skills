@@ -35,8 +35,10 @@ The same pages are rendered for people at `https://platform.metix.ai/docs`.
 1. `GET /contract` (or MCP `metix_get_contract`). Build `where` only from
    `querySpecByEntity.company`. The field list is closed; a name outside it is
    refused. Use the operators `fieldOperators` lists for each field: exact
-   fields such as `type` or `size_range` take `eq` or `in` with a value from the
-   companies page, and `match` is only for free-text fields such as `industry`.
+   fields such as `type` take `eq` or `in` with a value from the companies
+   page, ordered fields such as `size` also take `gte`, `gt`, `lte` and `lt` by
+   position in their value list, and `match` is only for free-text fields such
+   as `industry`.
 2. `POST /v1/companies/query`, then `POST /entity/v1/companies/detail-by-id`
    with up to 100 of those IDs. Search never returns records.
 3. On a 4xx, switch on `error_code`; `msg` says what to change. For the full

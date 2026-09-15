@@ -37,8 +37,9 @@ The same pages are rendered for people at `https://platform.metix.ai/docs`.
 1. `GET /contract` (or MCP `metix_get_contract`). Build `where` only from
    `querySpecByEntity.profile`. The field list is closed; a name outside it is
    refused. Use the operators `fieldOperators` lists for each field: exact
-   fields such as `role`, `level` or `country` take `eq` or `in` with a whole
-   value from the people page, and `match` is only for free-text fields.
+   fields such as `experience.function`, `experience.seniority` or
+   `location.country` take `eq` or `in` with a whole value from the people
+   page, and `match` is only for free-text fields.
 2. `POST /v1/people/query` for a structured tree, or `POST /v1/people-search`
    with `text` (not `query`) when the constraints will not sit on fields. Then
    `POST /entity/v1/profiles/detail-by-id` with up to 100 of those IDs. Search

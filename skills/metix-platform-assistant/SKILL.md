@@ -37,8 +37,8 @@ The same pages are rendered for people at `https://platform.metix.ai/docs`.
    operators `fieldOperators` lists for each field: exact fields take `eq` or
    `in` with a whole value, and `match` is only for free-text fields.
 2. Search returns IDs only. Detail returns records, up to 100 IDs at a time.
-   Chain on IDs, not on names: ask for `company_id` in `_source` on a job
-   detail call, and a profile's `experience.company_id` is the same kind of
+   Chain on IDs, not on names: ask for `company.id` in `_source` on a job
+   detail call, and a profile's `experience.company.id` is the same kind of
    company token. Both resolve at `/entity/v1/companies/detail-by-id`.
 3. On a 4xx, switch on `error_code`; `msg` says what to change. For the full
    explanation, fetch `docs_url` with `.md` added to the path:
@@ -48,7 +48,7 @@ The same pages are rendered for people at `https://platform.metix.ai/docs`.
 4. If this file and the live contract disagree, the contract wins.
 
 Typical cross-dataset sequence for "senior engineers at companies hiring for ML
-platform roles": jobs query, job detail with `company_id` in `_source`, company
+platform roles": jobs query, job detail with `company.id` in `_source`, company
 detail on those tokens, people query on those employers, profile detail on the
 shortlist. Narrow before the last step; that is where Credits concentrate.
 
