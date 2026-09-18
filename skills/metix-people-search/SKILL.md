@@ -1,6 +1,6 @@
 ---
 name: metix-people-search
-description: Use when finding professional profiles on Metix AI by role, skills, employer, education, location, or seniority, when a profile search needs natural language, and when retrieving the full profile records behind the ids.
+description: Use when finding professional profiles on Metix AI by role, skills, employer, education, location, or seniority, when a profile search needs natural language, when retrieving the full profile records behind the ids, and when a search returns too many, too few, or the wrong people.
 ---
 
 # Metix AI people search
@@ -74,6 +74,50 @@ curl -s https://mira-api.metix.ai/entity/v1/profiles/detail-by-id \
 For the next page, send `data.next` back as `after` with the same `where`.
 `POST /v1/people-search` takes `text` and `size` only, and returns
 `profile_ids` with no `total` and no `next`.
+
+## Getting better results
+
+Patterns that tend to help. Use whichever fit the request.
+
+- **Put the requirements in `where`, and keep preferences out.** Every leaf has
+  to hold, so a preference such as "ideally" or "a plus" written into the tree
+  removes people the user may want. Search on what is required and weigh the
+  preferences when reading the records. Alternatives ("Python or Java") are one
+  `any`.
+- **Write values the way records store them.** A country is its English name
+  with `eq` (`"United States"`), a state its full name. Seniority fields take
+  `eq` or `in` with labels from `closedValues`; they have no `gte`. "5+ years" is
+  `total_experience_months` `gte` 60. `education.degree` is ordered, so `gte`
+  works there.
+- **Check which titles people use.** A title from a job description can be rare
+  on profiles. Count a few spellings with `size: 1` and compare `total`, or read
+  `current_title` on a few records.
+- **Keep one job's conditions in one scope.** Conditions inside one
+  `has_experience` match the same job; separate leaves can match different jobs.
+- **Count before pulling records.** `size: 1` returns `total`, exact below
+  100000, and an empty search is free. A very large total usually means a
+  requirement is missing; a near-zero one usually means a spelling or value does
+  not match what is stored.
+- **With too few results, change one thing at a time**: another title first,
+  then the least important requirement, then a wider location. Comparing the
+  counts shows which condition was narrowing the search.
+- **Read only what you need.** Name the fields in `_source` on detail.
+  `headline`, `summary` and `experience.description` are left out of the
+  default record and are there on request.
+
+Backend engineers in the United States with five or more years, currently at a
+financial services company, counted first:
+
+```json
+{"where": {"all": [
+  {"field": "current_title", "match": "backend engineer"},
+  {"field": "location.country", "eq": "United States"},
+  {"field": "total_experience_months", "gte": 60},
+  {"has_experience": {"all": [
+    {"field": "experience.company.industry", "eq": "Financial Services"},
+    {"field": "experience.is_current", "eq": true}]}}
+]}, "size": 1}
+```
 
 ## Local rules
 
