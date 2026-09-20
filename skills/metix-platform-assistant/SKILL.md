@@ -83,8 +83,12 @@ already found and returns a personal email, a work email or a phone number.
 Sequence it last, after search and detail have narrowed the list, because it
 is charged per value returned rather than in result bands and is the most
 expensive call on the API. `POST /v1/contact/probe` says who has one before
-you buy, at search prices. Phone is enabled per account and answers 403 until
-it is. Neither route has an MCP tool; reach them over HTTP.
+you buy, at search prices. Unlock takes at most 25 people and probe at most 50.
+Unlock needs an account that has paid, an active plan or a purchased top-up;
+signup Credits are refused with a 403 that covers every kind, phone and email
+alike. It also reserves the worst case before it looks anything up, the sum of
+the requested rates times the number of people, so quote that figure and not
+the expected spend. Neither route has an MCP tool; reach them over HTTP.
 
 This API retrieves data. It does not score or rank a person against a role.
 Retrieve the records and reason over them; do not guess at a scoring path.
