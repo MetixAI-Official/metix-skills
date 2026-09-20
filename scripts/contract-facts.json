@@ -1,5 +1,5 @@
 {
-  "priceVersion": "usage-pricing-v2026-09-19",
+  "priceVersion": "usage-pricing-v2026-09-20",
   "endpoints": {
     "/v1/people-search": {
       "formula": "5 + ceil(successful_result_count / 25)",
