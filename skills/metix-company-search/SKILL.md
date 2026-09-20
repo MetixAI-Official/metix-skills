@@ -22,6 +22,7 @@ API     https://mira-api.metix.ai
 Docs    https://mira-api.metix.ai/docs/api/companies.md
         https://mira-api.metix.ai/docs/api/jobs.md
         https://mira-api.metix.ai/docs/api/people.md
+        https://mira-api.metix.ai/docs/api/contact.md
         https://mira-api.metix.ai/docs/api/query-spec.md
         https://mira-api.metix.ai/docs/reference/errors.md
         https://mira-api.metix.ai/docs/credits.md
@@ -75,7 +76,9 @@ machine for a lookalike key.
 
 Never print the key, write it into a file, or include it in a summary.
 
-Do not invent a contact-email route. That capability is not callable.
+Contact details are a people capability: `POST /v1/contact/unlock`, through
+`metix-people-search`. If a user asks for an email or a phone number, send
+them there rather than inventing a route here.
 
 Credits are charged in result bands. One ID per request is the expensive way to
 walk a set; batch. The formulas live on `/docs/credits.md`.

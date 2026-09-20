@@ -22,6 +22,7 @@ API     https://mira-api.metix.ai
         /mcp                    MCP endpoint, same key
 
 Docs    https://mira-api.metix.ai/docs/api/people.md
+        https://mira-api.metix.ai/docs/api/contact.md
         https://mira-api.metix.ai/docs/api/jobs.md
         https://mira-api.metix.ai/docs/api/companies.md
         https://mira-api.metix.ai/docs/api/query-spec.md
@@ -127,7 +128,13 @@ machine for a lookalike key.
 
 Never print the key, write it into a file, or include it in a summary.
 
-Do not invent a contact-email route. That capability is not callable.
+Contact details live on `POST /v1/contact/unlock`, for people you already
+found. It is charged per value returned rather than in bands, at the largest
+per-call rates on the API, so narrow the list first. `POST /v1/contact/probe`
+reports who has a value before you buy and is priced like a search. Phone is
+enabled per account and answers 403 until it is. Both routes are REST only:
+there is no MCP tool for either, so call them over HTTP even when the rest of
+the session is going through `/mcp`. Do not invent any other contact route.
 
 Credits are charged in result bands. One ID per request is the expensive way to
 walk a set; batch. The formulas live on `/docs/credits.md`. Natural-language

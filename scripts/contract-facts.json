@@ -1,5 +1,5 @@
 {
-  "priceVersion": "usage-pricing-v2026-08-04",
+  "priceVersion": "usage-pricing-v2026-09-19",
   "endpoints": {
     "/v1/people-search": {
       "formula": "5 + ceil(successful_result_count / 25)",
@@ -15,6 +15,16 @@
       "formula": "ceil(successful_record_count / 5)",
       "chargeOn": "2xx_with_non_empty_result",
       "resultPath": "found"
+    },
+    "/v1/contact/probe": {
+      "formula": "ceil(answered_people / 25)",
+      "chargeOn": "2xx_with_non_empty_result",
+      "resultPath": "summary.answered"
+    },
+    "/v1/contact/unlock": {
+      "formula": "sum(unit_cost[field] for each field returned found and not already unlocked)",
+      "chargeOn": "2xx_with_non_empty_result",
+      "resultPath": "summary.charged_credits"
     },
     "/v1/jobs/query": {
       "formula": "ceil(successful_result_count / 25)",
@@ -70,14 +80,16 @@
       "/entity/v1/profiles/detail-by-id",
       "/contract",
       "docs_url",
-      "querySpecByEntity"
+      "querySpecByEntity",
+      "/v1/contact/unlock",
+      "/v1/contact/probe"
     ],
     "metix-platform-assistant": [
       "METIX_KEY",
       "/contract",
       "docs_url",
       "querySpecByEntity",
-      "coming soon"
+      "/v1/contact/unlock"
     ]
   }
 }

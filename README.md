@@ -75,8 +75,10 @@ Keep it out of source control and out of anything browser-visible.
 | `metix-company-search` | Organization lists and company records. |
 | `metix-job-search` | Active postings as a hiring-demand signal. |
 
-Contact email lookup is coming soon. It has no callable route today, so nothing
-here documents one.
+Contact details are part of `metix-people-search`: once you have a profile, one
+call returns a personal email, a work email or a phone number for it. It is
+charged per value returned rather than in result bands, and it is the most
+expensive thing on the API, so the skill teaches the probe-first pattern.
 
 ## The shape to know
 

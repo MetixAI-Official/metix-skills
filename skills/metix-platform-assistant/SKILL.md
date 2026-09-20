@@ -21,6 +21,7 @@ API     https://mira-api.metix.ai
 
 Docs    https://mira-api.metix.ai/docs/api/jobs.md
         https://mira-api.metix.ai/docs/api/people.md
+        https://mira-api.metix.ai/docs/api/contact.md
         https://mira-api.metix.ai/docs/api/companies.md
         https://mira-api.metix.ai/docs/api/query-spec.md
         https://mira-api.metix.ai/docs/reference/errors.md
@@ -77,9 +78,13 @@ machine for a lookalike key.
 
 Never print the key, write it into a file, or include it in a summary.
 
-Do not invent a contact-email route. That capability is coming soon and has no
-callable route today. If a user asks for an email address, say it is not
-available yet rather than suggesting a workaround.
+Contact details are callable: `POST /v1/contact/unlock` takes people you have
+already found and returns a personal email, a work email or a phone number.
+Sequence it last, after search and detail have narrowed the list, because it
+is charged per value returned rather than in result bands and is the most
+expensive call on the API. `POST /v1/contact/probe` says who has one before
+you buy, at search prices. Phone is enabled per account and answers 403 until
+it is. Neither route has an MCP tool; reach them over HTTP.
 
 This API retrieves data. It does not score or rank a person against a role.
 Retrieve the records and reason over them; do not guess at a scoring path.

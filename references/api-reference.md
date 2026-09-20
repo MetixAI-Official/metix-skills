@@ -12,6 +12,7 @@ any page for the Markdown form, for example:
 
 - `/docs/api/jobs.md`
 - `/docs/api/people.md`
+- `/docs/api/contact.md`
 - `/docs/api/companies.md`
 - `/docs/api/query-spec.md`
 - `/docs/reference/errors.md`

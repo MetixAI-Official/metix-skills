@@ -64,6 +64,7 @@ const POINTER_NEEDLES = [
   "/mcp",
   "/docs/api/jobs.md",
   "/docs/api/people.md",
+  "/docs/api/contact.md",
   "/docs/api/companies.md",
   "/docs/api/query-spec.md",
   "/docs/reference/errors.md",
@@ -73,7 +74,11 @@ const POINTER_NEEDLES = [
   "docs_url",
   "the contract wins",
   "Never print the key",
-  "Do not invent a contact-email route",
+  // Was "Do not invent a contact-email route", which held while there was no
+  // route to invent. There is one now, so the needle is the route itself: every
+  // skill has to name it, whether it teaches it or points at the skill that
+  // does. An agent that has read the real path is the one that does not guess.
+  "/v1/contact/unlock",
 ];
 
 for (const skillDir of skillDirs) {
