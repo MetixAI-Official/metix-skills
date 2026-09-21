@@ -11,6 +11,9 @@ Charges scale in result bands (`ceil(results / 25)` for search,
 `ceil(found / 5)` for detail). One ID per request is the expensive way to walk
 a set; batch.
 
+A search that leaves out `size` returns up to 100 results, which is up to 4
+Credits where 25 results would have cost 1. Pass the number you need.
+
 Contact unlock is the exception: it is charged per value returned, at a flat
 rate per kind that is the same on every plan, so batching changes nothing about
 what it costs. A kind that comes back anything other than `found` is free, and
