@@ -54,7 +54,7 @@ export METIX_KEY="metix_xxxxxxxxxxxx"
 ```
 
 Create one at [platform.metix.ai/api-keys](https://platform.metix.ai/api-keys).
-The free plan starts with 100 Credits and needs no card.
+The free plan starts with 100 API Credits and needs no card.
 
 `METIX_KEY` is the only variable involved. The skills read it, the MCP server
 reads it, and every example in the Metix AI docs reads it. If you followed an
@@ -107,7 +107,7 @@ fields take `match`. The contract lists the operators for every field under
 ## Credits
 
 Successful work is charged; failures are not. Empty Query Spec searches and
-detail misses are free; AI people search retains its 5-Credit base charge even
+detail misses are free; AI people search retains its 5 API Credit base charge even
 when it returns no ids. Charges scale in result bands, so batch. Full rules:
 `https://mira-api.metix.ai/docs/credits.md`. A pointer copy sits in
 `references/credits.md`.
@@ -116,7 +116,7 @@ when it returns no ids. Charges scale in result bands, so batch. Full rules:
 
 Installing these Skills does not install or register an MCP server. Skills are
 local agent instructions; MCP is an independent client connection to the same
-Metix AI API and uses the same key and Credit rules.
+Metix AI API and uses the same key and API Credit rules.
 
 Streamable HTTP endpoint: `https://mira-api.metix.ai/mcp`; legacy SSE endpoint:
 `https://mira-api.metix.ai/sse`. A client negotiates the protocol version with

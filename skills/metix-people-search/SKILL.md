@@ -8,7 +8,7 @@ description: Use when finding professional profiles on Metix AI by role, skills,
 Search returns `profile_ids`. Detail returns the records. Prefer the structured
 Query Spec route: it is exact, repeatable, and has no base charge. Use natural
 language only when the constraints resist being written as fields; it adds a
-5-Credit base. Field names, operators, and scopes come from the live contract
+5 API Credit base. Field names, operators, and scopes come from the live contract
 and the docs pages below, not from this file.
 
 ## Resources
@@ -17,7 +17,7 @@ and the docs pages below, not from this file.
 API     https://mira-api.metix.ai
         GET /version            deployed version and contract hash (free)
         GET /contract           field names, operators, limits (free, needs the key)
-        GET /auth/key/status    key state and remaining Credits (free)
+        GET /auth/key/status    key state and remaining API Credits (free)
         GET /docs               tutorial catalog; add .md to any page for Markdown
         /mcp                    MCP endpoint, same key
 
@@ -134,7 +134,7 @@ per-call rates on the API, so narrow the list first. `POST /v1/contact/probe`
 reports who has a value before you buy and is priced like a search. Unlock
 takes at most 25 people per call and probe at most 50, so split a longer list.
 Unlock needs an account that has paid: an active plan or a purchased top-up.
-Signup Credits are refused with a 403, and that refusal covers every kind, so a
+Signup API Credits are refused with a 403, and that refusal covers every kind, so a
 403 on an email unlock is about payment and never about phone. Unlock also
 reserves the worst case up front, the sum of the requested rates times the
 number of people, whatever the hit rate turns out to be, so tell the user that
@@ -142,6 +142,6 @@ figure before the call. Both routes are REST only:
 there is no MCP tool for either, so call them over HTTP even when the rest of
 the session is going through `/mcp`. Do not invent any other contact route.
 
-Credits are charged in result bands. One ID per request is the expensive way to
+API Credits are charged in result bands. One ID per request is the expensive way to
 walk a set; batch. The formulas live on `/docs/credits.md`. Natural-language
-people search keeps a 5-Credit base even when it returns no IDs.
+people search keeps a 5 API Credit base even when it returns no IDs.

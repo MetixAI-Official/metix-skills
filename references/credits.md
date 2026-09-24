@@ -5,14 +5,14 @@ package.
 
 Successful work is charged; validation failures are not. Empty Query Spec
 searches and detail misses are free. Natural-language people search keeps a
-5-Credit base even when it returns no IDs.
+5 API Credit base even when it returns no IDs.
 
 Charges scale in result bands (`ceil(results / 25)` for search,
 `ceil(found / 5)` for detail). One ID per request is the expensive way to walk
 a set; batch.
 
 A search that leaves out `size` returns up to 100 results, which is up to 4
-Credits where 25 results would have cost 1. Pass the number you need.
+API Credits where 25 results would have cost 1. Pass the number you need.
 
 Contact unlock is the exception: it is charged per value returned, at a flat
 rate per kind that is the same on every plan, so batching changes nothing about

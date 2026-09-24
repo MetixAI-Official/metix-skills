@@ -15,7 +15,7 @@ this file.
 API     https://mira-api.metix.ai
         GET /version            deployed version and contract hash (free)
         GET /contract           field names, operators, limits (free, needs the key)
-        GET /auth/key/status    key state and remaining Credits (free)
+        GET /auth/key/status    key state and remaining API Credits (free)
         GET /docs               tutorial catalog; add .md to any page for Markdown
         /mcp                    MCP endpoint, same key
 
@@ -80,5 +80,5 @@ Contact details are a people capability: `POST /v1/contact/unlock`, through
 `metix-people-search`. If a user asks for an email or a phone number, send
 them there rather than inventing a route here.
 
-Credits are charged in result bands. One ID per request is the expensive way to
+API Credits are charged in result bands. One ID per request is the expensive way to
 walk a set; batch. The formulas live on `/docs/credits.md`.

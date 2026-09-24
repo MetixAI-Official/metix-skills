@@ -15,7 +15,7 @@ docs pages below, not from this file.
 API     https://mira-api.metix.ai
         GET /version            deployed version and contract hash (free)
         GET /contract           field names, operators, limits (free, needs the key)
-        GET /auth/key/status    key state and remaining Credits (free)
+        GET /auth/key/status    key state and remaining API Credits (free)
         GET /docs               tutorial catalog; add .md to any page for Markdown
         /mcp                    MCP endpoint, same key
 
@@ -51,7 +51,7 @@ The same pages are rendered for people at `https://platform.metix.ai/docs`.
 Typical cross-dataset sequence for "senior engineers at companies hiring for ML
 platform roles": jobs query, job detail with `company.id` in `_source`, company
 detail on those tokens, people query on those employers, profile detail on the
-shortlist. Narrow before the last step; that is where Credits concentrate.
+shortlist. Narrow before the last step; that is where API Credits concentrate.
 
 ## A first chain
 
@@ -85,7 +85,7 @@ is charged per value returned rather than in result bands and is the most
 expensive call on the API. `POST /v1/contact/probe` says who has one before
 you buy, at search prices. Unlock takes at most 25 people and probe at most 50.
 Unlock needs an account that has paid, an active plan or a purchased top-up;
-signup Credits are refused with a 403 that covers every kind, phone and email
+signup API Credits are refused with a 403 that covers every kind, phone and email
 alike. It also reserves the worst case before it looks anything up, the sum of
 the requested rates times the number of people, so quote that figure and not
 the expected spend. Neither route has an MCP tool; reach them over HTTP.
@@ -93,6 +93,6 @@ the expected spend. Neither route has an MCP tool; reach them over HTTP.
 This API retrieves data. It does not score or rank a person against a role.
 Retrieve the records and reason over them; do not guess at a scoring path.
 
-Credits are charged in result bands. One ID per request is the expensive way to
+API Credits are charged in result bands. One ID per request is the expensive way to
 walk a set; batch. The formulas live on `/docs/credits.md`. Check
 `GET /auth/key/status` (free) before a run that will pull thousands of records.
