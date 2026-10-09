@@ -134,7 +134,7 @@ environment reference instead of writing its value into configuration:
 ```json
 {
   "mcpServers": {
-    "metix": {
+    "metix-ai-platform": {
       "type": "http",
       "url": "https://mira-api.metix.ai/mcp",
       "headers": { "Authorization": "Bearer ${METIX_KEY}" }
