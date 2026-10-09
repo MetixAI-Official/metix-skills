@@ -21,6 +21,23 @@ GitHub is the single distribution point. The installer asks which skills and
 which agents to install for; `--agent claude-code` installs into
 `.claude/skills` for Claude Code alone.
 
+### On Claude Code, as a plugin
+
+Claude Code can take the same four skills and the MCP server together, in one
+step:
+
+```
+/plugin install metix-ai --marketplace MetixAI-Official/metix-skills
+```
+
+It asks for an API key on install and keeps it out of the config file, so the
+MCP server arrives configured. The skills then answer under the plugin's name,
+`metix-ai:metix-people-search` and so on.
+
+Pick one or the other. Installing both leaves two copies of every skill, one
+plain and one prefixed, and an agent holding both will sometimes follow the
+copy you did not mean.
+
 ### Coming from the OpenJobs skills
 
 The earlier package, `OpenJobsAI/openjobs-openclaw-skills`, is retired. Its
@@ -114,9 +131,11 @@ when it returns no ids. Charges scale in result bands, so batch. Full rules:
 
 ## MCP is configured separately
 
-Installing these Skills does not install or register an MCP server. Skills are
-local agent instructions; MCP is an independent client connection to the same
-Metix AI API and uses the same key and API Credit rules.
+Installing these Skills with `npx skills add` does not install or register an
+MCP server. Skills are local agent instructions; MCP is an independent client
+connection to the same Metix AI API and uses the same key and API Credit rules.
+The Claude Code plugin above is the one exception: it carries the server with
+it, so plugin users can skip this section.
 
 Streamable HTTP endpoint: `https://mira-api.metix.ai/mcp`; legacy SSE endpoint:
 `https://mira-api.metix.ai/sse`. A client negotiates the protocol version with

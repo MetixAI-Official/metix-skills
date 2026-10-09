@@ -1,0 +1,15 @@
+{
+  "name": "metix-skills",
+  "description": "The Metix AI plugin for Claude Code: agent skills and the hosted MCP server for people, company and job posting data.",
+  "owner": {
+    "name": "OpenJobs AI Inc.",
+    "url": "https://metix.ai"
+  },
+  "plugins": [
+    {
+      "name": "metix-ai",
+      "source": "./",
+      "description": "Skills and the hosted MCP server for the Metix AI data API: professional profiles, companies, and active job postings."
+    }
+  ]
+}

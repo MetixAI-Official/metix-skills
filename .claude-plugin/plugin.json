@@ -1,0 +1,38 @@
+{
+  "name": "metix-ai",
+  "displayName": "Metix AI",
+  "version": "0.1.0",
+  "description": "Skills and the hosted MCP server for the Metix AI data API: professional profiles, companies, and active job postings.",
+  "author": {
+    "name": "OpenJobs AI Inc.",
+    "url": "https://metix.ai"
+  },
+  "homepage": "https://platform.metix.ai/docs",
+  "repository": "https://github.com/MetixAI-Official/metix-skills",
+  "keywords": [
+    "people-data",
+    "company-data",
+    "job-postings",
+    "recruiting",
+    "sourcing",
+    "mcp"
+  ],
+  "mcpServers": {
+    "metix": {
+      "type": "http",
+      "url": "https://mira-api.metix.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer ${user_config.api_key}"
+      }
+    }
+  },
+  "userConfig": {
+    "api_key": {
+      "type": "string",
+      "title": "Metix AI API key",
+      "description": "Create one at https://platform.metix.ai/api-keys. This is the same key as the METIX_KEY environment variable the skills read.",
+      "required": true,
+      "sensitive": true
+    }
+  }
+}
