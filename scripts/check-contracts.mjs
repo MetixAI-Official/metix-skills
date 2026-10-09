@@ -122,6 +122,50 @@ for (const file of publishedFiles) {
   if (/\blocalhost\b|\b127\.0\.0\.1\b/.test(text)) fail(`${relative}: names a machine-local address`);
 }
 
+// No skill may deny a tool the server actually serves. Two public skills told
+// agents the contact routes were "REST only" and had "no MCP tool for either",
+// while metix_probe_contacts and metix_unlock_contacts were both in the live
+// tools/list. The cost of that one is high and silent: it sends an MCP-only
+// agent to raw HTTP, so it handles the key itself, for the two most expensive
+// routes on the API, and it is phrased as a prohibition, so the agent will not
+// try the tool it already holds.
+const mcpConfigPath = path.join(repoRoot, "../mira-api/app/config/mcp_config.py");
+if (fs.existsSync(mcpConfigPath)) {
+  const config = fs.readFileSync(mcpConfigPath, "utf8");
+  const allowlist = /PUBLIC_MCP_OPERATION_IDS\s*=\s*\(([\s\S]*?)\n\)/.exec(config);
+  if (!allowlist) {
+    fail("mcp_config.py no longer names PUBLIC_MCP_OPERATION_IDS, so tool claims were not checked");
+  } else {
+    const served = new Set([...allowlist[1].matchAll(/"(metix_[a-z_]+)"/g)].map((m) => m[1]));
+    // A skill that names both contact routes is teaching them, not pointing at
+    // the skill that does: metix-company-search and metix-job-search name only
+    // unlock, in one sentence that hands off. The teaching skills have to name
+    // the tools, and no skill may deny them.
+    const pairs = [
+      ["/v1/contact/unlock", "metix_unlock_contacts"],
+      ["/v1/contact/probe", "metix_probe_contacts"],
+    ];
+    const denials = [/no MCP tool/i, /REST only/i, /reach them over HTTP/i];
+    for (const skillDir of skillDirs) {
+      const file = path.join(skillDir, "SKILL.md");
+      if (!fs.existsSync(file)) continue;
+      const text = fs.readFileSync(file, "utf8");
+      const relative = path.relative(repoRoot, file);
+      for (const denial of denials) {
+        if (denial.test(text)) fail(`${relative}: says ${denial}, and the server serves a tool for every contact route`);
+      }
+      const teaches = pairs.every(([route]) => text.includes(route));
+      if (!teaches) continue;
+      for (const [route, tool] of pairs) {
+        if (!served.has(tool)) continue;
+        if (!text.includes(tool)) {
+          fail(`${relative}: teaches ${route} but never names ${tool}, the tool the server serves for it`);
+        }
+      }
+    }
+  }
+}
+
 if (errors.length) {
   console.error("Contract check failed:\n" + errors.map((error) => `  - ${error}`).join("\n"));
   process.exit(1);

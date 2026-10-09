@@ -138,9 +138,10 @@ Signup API Credits are refused with a 403, and that refusal covers every kind, s
 403 on an email unlock is about payment and never about phone. Unlock also
 reserves the worst case up front, the sum of the requested rates times the
 number of people, whatever the hit rate turns out to be, so tell the user that
-figure before the call. Both routes are REST only:
-there is no MCP tool for either, so call them over HTTP even when the rest of
-the session is going through `/mcp`. Do not invent any other contact route.
+figure before the call. Both routes have MCP tools, `metix_probe_contacts` and
+`metix_unlock_contacts`, so an MCP session does not have to drop to raw HTTP for
+them. Unlock over MCP needs a connection granted the `contact:unlock` scope.
+Do not invent any other contact route.
 
 API Credits are charged in result bands. One ID per request is the expensive way to
 walk a set; batch. The formulas live on `/docs/credits.md`. Natural-language
