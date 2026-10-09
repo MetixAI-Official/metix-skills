@@ -67,8 +67,10 @@ curl -s https://mira-api.metix.ai/entity/v1/companies/detail-by-id \
   -d '{"company_ids": ["<company.id from the job record>"]}'
 ```
 
-Each search route takes `{"where": ..., "size": 25}`; the focused skills show
-one for each dataset.
+The three Query Spec search routes take `{"where": ..., "size": 25}`; the focused
+skills show one for each dataset. `/v1/people-search` is the exception: it takes
+`{"text": ..., "size": 25}` and refuses `where` outright, because it reads a
+plain-language brief rather than a filter.
 
 ## Local rules
 
@@ -88,7 +90,9 @@ Unlock needs an account that has paid, an active plan or a purchased top-up;
 signup API Credits are refused with a 403 that covers every kind, phone and email
 alike. It also reserves the worst case before it looks anything up, the sum of
 the requested rates times the number of people, so quote that figure and not
-the expected spend. Neither route has an MCP tool; reach them over HTTP.
+the expected spend. Both routes have MCP tools, `metix_probe_contacts` and
+`metix_unlock_contacts`; unlock over MCP needs a connection granted the
+`contact:unlock` scope, so a refusal there is about the grant, not the route.
 
 This API retrieves data. It does not score or rank a person against a role.
 Retrieve the records and reason over them; do not guess at a scoring path.

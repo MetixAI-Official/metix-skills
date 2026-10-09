@@ -144,7 +144,7 @@ environment reference instead of writing its value into configuration:
 ```
 
 Client formats differ, so translate the same URL and header facts rather than
-copying this JSON into another client. The ten tools are listed at
+copying this JSON into another client. The twelve tools are listed at
 `https://platform.metix.ai/docs/mcp#tools`, and `tools/list` returns them with
 their input schemas. Call `metix_get_contract` first.
 
