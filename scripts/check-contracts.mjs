@@ -166,6 +166,29 @@ if (fs.existsSync(mcpConfigPath)) {
   }
 }
 
+// The server's registration name. It is what a reader sees in their own client, and in a client
+// that namespaces tools by server it is the only thing separating this service from metix.ai,
+// which is a different product with different prices and a different Credit. The name is written
+// in the README's setup command and again in the plugin manifest, which is how it came to be
+// renamed in one and not the other, so both are held to one spelling here.
+const SERVER_NAME = "metix-ai-platform";
+for (const relative of ["README.md", ".claude-plugin/plugin.json"]) {
+  const full = path.join(repoRoot, relative);
+  if (!fs.existsSync(full)) continue;
+  const text = fs.readFileSync(full, "utf8");
+  // Only the two forms that can only be a registration. A bare `metix` anywhere else is a tool
+  // name, a hostname or the org, and all three are correct.
+  if (/mcp add[^\n]*?\bmetix\b(?![-_.])/.test(text)) {
+    fail(`${relative}: an mcp add command still registers the server as "metix"; it is "${SERVER_NAME}"`);
+  }
+  if (/"metix"\s*:/.test(text)) {
+    fail(`${relative}: an mcpServers key still registers the server as "metix"; it is "${SERVER_NAME}"`);
+  }
+  if (!text.includes(SERVER_NAME)) {
+    fail(`${relative}: names no server registration; it should register "${SERVER_NAME}"`);
+  }
+}
+
 if (errors.length) {
   console.error("Contract check failed:\n" + errors.map((error) => `  - ${error}`).join("\n"));
   process.exit(1);

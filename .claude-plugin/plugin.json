@@ -18,7 +18,7 @@
     "mcp"
   ],
   "mcpServers": {
-    "metix": {
+    "metix-ai-platform": {
       "type": "http",
       "url": "https://mira-api.metix.ai/mcp",
       "headers": {
