@@ -14,7 +14,7 @@ docs pages below, not from this file.
 ```
 API     https://mira-api.metix.ai
         GET /version            deployed version and contract hash (free)
-        GET /contract           field names, operators, limits (free, needs the key)
+        GET /contract           field names, operators, limits (free, no key needed)
         GET /auth/key/status    key state and remaining API Credits (free)
         GET /docs               tutorial catalog; add .md to any page for Markdown
         /mcp                    MCP endpoint, same key
