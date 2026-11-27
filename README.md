@@ -23,7 +23,7 @@ which agents to install for; `--agent claude-code` installs into
 
 ### On Claude Code, as a plugin
 
-Claude Code can take the same four skills and the MCP server together, in one
+Claude Code can take the same five skills and the MCP server together, in one
 step:
 
 ```
@@ -91,6 +91,7 @@ Keep it out of source control and out of anything browser-visible.
 | `metix-people-search` | Finding profiles, and turning the ids into full records. |
 | `metix-company-search` | Organization lists and company records. |
 | `metix-job-search` | Active postings as a hiring-demand signal. |
+| `metix-researcher-search` | Researchers found by what they published, with their papers and institutions. Rolling out; see the skill. |
 
 Contact details are part of `metix-people-search`: once you have a profile, one
 call returns a personal email, a work email or a phone number for it. It is
@@ -181,4 +182,4 @@ pages, that no published file names a host outside `metix.ai`, and that endpoint
 prices in `contract-facts.json` still match the API's committed blueprint. It does
 not pin a `contract_hash` and it does not require field tables in `SKILL.md`.
 Pass `--no-blueprint` only if you genuinely mean to skip the price check. The
-install smoke proves a clean `npx skills add` produces four pointer skills.
+install smoke proves a clean `npx skills add` produces five pointer skills.
