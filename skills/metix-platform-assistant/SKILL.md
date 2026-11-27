@@ -94,6 +94,10 @@ the expected spend. Both routes have MCP tools, `metix_probe_contacts` and
 `metix_unlock_contacts`; unlock over MCP needs a connection granted the
 `contact:unlock` scope, so a refusal there is about the grant, not the route.
 
+Researchers, their papers and institutions are a separate dataset with its own
+ids, found by what people published: `metix-researcher-search`. A researcher is
+not linked to a professional profile, so do not pass ids between the two.
+
 This API retrieves data. It does not score or rank a person against a role.
 Retrieve the records and reason over them; do not guess at a scoring path.
 

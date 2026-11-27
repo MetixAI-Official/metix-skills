@@ -90,6 +90,19 @@
       "docs_url",
       "querySpecByEntity",
       "/v1/contact/unlock"
+    ],
+    "metix-researcher-search": [
+      "METIX_KEY",
+      "/v1/researchers/query",
+      "/v1/papers/query",
+      "/v1/institutions/query",
+      "/entity/v1/researchers/detail-by-id",
+      "/contract",
+      "docs_url",
+      "querySpecByEntity",
+      "has_paper",
+      "paper_condition_too_broad",
+      "/v1/contact/unlock"
     ]
   }
 }
